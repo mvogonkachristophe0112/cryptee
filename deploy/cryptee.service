@@ -1,0 +1,33 @@
+[Unit]
+Description=Cryptee Secure File Sharing Application
+After=network.target mysql.service redis-server.service
+Requires=mysql.service redis-server.service
+
+[Service]
+Type=simple
+User=cryptee
+Group=cryptee
+WorkingDirectory=/opt/cryptee
+Environment=PATH=/opt/cryptee/venv/bin
+Environment=PYTHONPATH=/opt/cryptee
+ExecStart=/opt/cryptee/venv/bin/python run.py
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=cryptee
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/cryptee
+ProtectHome=yes
+
+# Resource limits
+LimitNOFILE=65536
+MemoryLimit=1G
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4251 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptee - Secure File Sharing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --accent-green: #10b981;
+            --accent-green-dark: #059669;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-bg);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-green) 100%);
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-blue);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-btn:hover {
+            background: var(--gray-200);
+            transform: translateY(-1px);
+            color: var(--primary-blue);
+        }
+
+        .nav-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-btn.active::after {
+            width: 100%;
+        }
+
+        .nav-btn:focus {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+
+        .nav-btn.auth {
+            background: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+        }
+
+        .nav-btn.auth:hover {
+            background: var(--accent-green-dark);
+            color: white;
+        }
+
+        .user-status {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 100%;
+        }
+
+        /* Page Management */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .card-header {
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-icon {
+            color: var(--primary-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--gray-600);
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-200);
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-description {
+            color: var(--gray-600);
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+
+        .btn-success {
+            background: var(--accent-green);
+        }
+
+        .btn-success:hover {
+            background: var(--accent-green-dark);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-600);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-700);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: var(--shadow);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 0.875rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: var(--white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control:invalid {
+            border-color: #ef4444;
+        }
+
+        .form-control:valid {
+            border-color: var(--accent-green);
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .form-text.error {
+            color: #ef4444;
+        }
+
+        .form-text.success {
+            color: var(--accent-green);
+        }
+
+        /* Input groups for better UX */
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            pointer-events: none;
+        }
+
+        .form-control:has(+ .input-icon) {
+            padding-right: 3rem;
+        }
+
+        /* Status Messages */
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status.info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* File Upload Area */
+        .upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--gray-50);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-blue);
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--gray-400);
+            margin-bottom: 0.75rem;
+        }
+
+        .upload-text {
+            font-size: 1rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* Settings */
+        .settings-group {
+            margin-bottom: 2rem;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: var(--white);
+            transition: all 0.2s ease;
+        }
+
+        .settings-item:hover {
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .settings-label {
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .settings-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--gray-200);
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 50px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--gray-100);
+        }
+
+        .nav-icon {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--gray-600);
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--primary-blue);
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .nav-item.active .nav-text {
+            color: var(--primary-blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .nav-left, .nav-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin: 1.5rem 0;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .main {
+                padding: 1rem;
+                padding-bottom: 5rem; /* Space for mobile nav */
+            }
+
+            .card {
+                padding: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .feature-card {
+                padding: 1.25rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.625rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .upload-area {
+                padding: 1.5rem;
+            }
+
+            .upload-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Hide mobile nav on desktop */
+        @media (min-width: 769px) {
+            .mobile-nav {
+                display: none;
+            }
+        }
+
+        /* File Type Selection */
+        .file-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .file-type-option {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .file-type-option:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .file-type-option.active {
+            border-color: var(--primary-blue);
+            background: #eff6ff;
+            box-shadow: var(--shadow);
+        }
+
+        .file-type-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .file-type-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-type-label {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .file-type-desc {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            line-height: 1.3;
+        }
+
+        /* Upload Sections */
+        .upload-section, .received-files-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .upload-section h3, .received-files-section h3 {
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .section-desc {
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Received Files List */
+        .received-files-list {
+            min-height: 200px;
+        }
+
+        .received-file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background: var(--white);
+            transition: all 0.2s ease;
+        }
+
+        .received-file-item:hover {
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .file-meta {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .file-timestamp {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            text-align: right;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .file-action-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            color: var(--gray-700);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .file-action-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .file-action-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .file-action-btn.primary:hover {
+            background: var(--primary-blue-dark);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-500);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-desc {
+            font-size: 0.9rem;
+        }
+
+        /* Encryption Section Styles */
+        .encryption-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .encryption-strength {
+            margin-top: 0.5rem;
+        }
+
+        .strength-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .strength-fill.weak {
+            background: #ef4444;
+            width: 33%;
+        }
+
+        .strength-fill.medium {
+            background: #f59e0b;
+            width: 66%;
+        }
+
+        .strength-fill.strong {
+            background: var(--accent-green);
+            width: 100%;
+        }
+
+        .strength-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .strength-text.weak {
+            color: #ef4444;
+        }
+
+        .strength-text.medium {
+            color: #f59e0b;
+        }
+
+        .strength-text.strong {
+            color: var(--accent-green);
+        }
+
+        .encryption-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .encryption-status {
+            margin-top: 1rem;
+        }
+
+        /* History Page Styles */
+        .history-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray-600);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-blue);
+            background: var(--gray-50);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+            background: var(--light-bg);
+        }
+
+        .history-list {
+            min-height: 300px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background: var(--white);
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow);
+        }
+
+        .history-item.sent {
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .history-item.received {
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .history-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .history-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .history-details {
+            flex: 1;
+        }
+
+        .history-name {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-meta {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .history-timestamp {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            text-align: right;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .history-action-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            color: var(--gray-700);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .history-action-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Authenticated navigation styles */
+        .nav-btn.auth-only {
+            display: none;
+        }
+
+        .nav-btn.auth-only.show {
+            display: inline-flex;
+        }
+
+        /* Help Page Styles */
+        .help-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .help-section h3 {
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .help-intro {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--gray-700);
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .step-card {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .step-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: var(--primary-blue);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-card h4 {
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .step-card p {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .instruction-accordion {
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            width: 100%;
+            background: var(--white);
+            border: none;
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            transition: background 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background: var(--gray-50);
+        }
+
+        .accordion-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .accordion-title {
+            flex: 1;
+        }
+
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--light-bg);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .accordion-content.active {
+            max-height: 1000px;
+        }
+
+        .accordion-content ol {
+            margin: 1.5rem 2rem;
+            padding-left: 1rem;
+        }
+
+        .accordion-content li {
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+            color: var(--gray-700);
+        }
+
+        .help-note, .help-tip {
+            background: #e0f2fe;
+            border: 1px solid #0ea5e9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .help-tip {
+            background: #f0fdf4;
+            border-color: #22c55e;
+        }
+
+        .faq-list {
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            width: 100%;
+            background: var(--white);
+            border: none;
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray-900);
+            transition: background 0.2s ease;
+        }
+
+        .faq-question:hover {
+            background: var(--gray-50);
+        }
+
+        .faq-arrow {
+            transition: transform 0.3s ease;
+            color: var(--primary-blue);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--light-bg);
+            border-top: 1px solid var(--gray-200);
+            padding: 0 1.5rem;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        .faq-answer.active {
+            max-height: 500px;
+            padding: 1.5rem;
+        }
+
+        .support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .support-card {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .support-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .support-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .support-card h4 {
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .support-card p {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        /* Report Page Styles */
+        .report-intro {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: var(--gray-300);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .star:hover, .star.active {
+            color: #fbbf24;
+        }
+
+        .rating-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        .browser-info {
+            background: var(--gray-50);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+        }
+
+        .info-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .status-message {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .status-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #34d399;
+        }
+
+        .status-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #f87171;
+        }
+
+        .recent-reports {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gray-200);
+        }
+
+        .reports-list {
+            margin-top: 1rem;
+        }
+
+        .report-item {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-type {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .report-date {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        .report-rating {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile modal adjustments */
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+                max-height: 90vh;
+            }
+
+            .file-type-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            .file-type-option {
+                padding: 0.75rem;
+            }
+
+            .received-file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .file-timestamp {
+                text-align: left;
+                font-size: 0.75rem;
+            }
+
+            .history-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                justify-content: center;
+                border-bottom: none;
+                border-right: 2px solid transparent;
+            }
+
+            .tab-btn.active {
+                border-bottom: none;
+                border-right-color: var(--primary-blue);
+            }
+
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .history-timestamp {
+                text-align: left;
+                font-size: 0.75rem;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .support-options {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .rating-stars {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-shield-alt"></i> Cryptee</h1>
+            <p>Secure • Encrypted • Private File Sharing</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="nav-left">
+                    <a href="#" id="home-btn" class="nav-btn active" onclick="navigateToPage('home'); return false;">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="#" id="about-btn" class="nav-btn" onclick="navigateToPage('about'); return false;">
+                        <i class="fas fa-info-circle"></i> About
+                    </a>
+                    <a href="#" id="settings-btn" class="nav-btn" onclick="navigateToPage('settings'); return false;">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="#" id="help-btn" class="nav-btn" onclick="navigateToPage('help'); return false;">
+                        <i class="fas fa-question-circle"></i> Help
+                    </a>
+                    <a href="#" id="report-btn" class="nav-btn" onclick="navigateToPage('report'); return false;">
+                        <i class="fas fa-bug"></i> Report Bug
+                    </a>
+                    <!-- Authenticated user navigation -->
+                    <a href="#" id="send-btn" class="nav-btn auth-only" style="display: none;" onclick="navigateToPage('send'); return false;">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </a>
+                    <a href="#" id="receive-btn" class="nav-btn auth-only" style="display: none;" onclick="navigateToPage('receive'); return false;">
+                        <i class="fas fa-inbox"></i> Receive
+                    </a>
+                    <a href="#" id="history-btn" class="nav-btn auth-only" style="display: none;" onclick="navigateToPage('history'); return false;">
+                        <i class="fas fa-history"></i> History
+                    </a>
+                </div>
+                <div class="nav-right">
+                    <div id="user-info" class="user-status" aria-live="polite">Not logged in</div>
+                    <button id="login-btn" onclick="navigateToPage('login')" class="nav-btn auth" aria-label="Login to your account">
+                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
+                    </button>
+                    <button id="register-btn" onclick="navigateToPage('register')" class="nav-btn auth" aria-label="Create new account">
+                        <i class="fas fa-user-plus" aria-hidden="true"></i> Register
+                    </button>
+                    <button id="logout-btn" class="nav-btn" style="display: none;" onclick="logout()" aria-label="Logout from account">
+                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav" id="mobile-nav" style="display: none;">
+            <button onclick="navigateToPage('send')" class="nav-item">
+                <span class="nav-icon">📤</span>
+                <span class="nav-text">Send</span>
+            </button>
+            <button onclick="navigateToPage('receive')" class="nav-item">
+                <span class="nav-icon">📥</span>
+                <span class="nav-text">Receive</span>
+            </button>
+            <button onclick="navigateToPage('settings')" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Settings</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main" id="main-content">
+            <div class="container">
+                <!-- Home Page -->
+                <div id="home" class="page active">
+                    <div class="hero">
+                        <h1 class="hero-title">Welcome to Cryptee</h1>
+                        <p class="hero-subtitle">Your files, your control. End-to-end encrypted sharing that protects your privacy with military-grade security.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-success" onclick="navigateToPage('send')">
+                                <i class="fas fa-paper-plane"></i> Start Sending
+                            </button>
+                            <button class="btn btn-outline" onclick="navigateToPage('about')">
+                                <i class="fas fa-info-circle"></i> Learn More
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="features">
+                        <div class="feature-card" onclick="showFeatureModal('encryption')">
+                            <div class="feature-icon">🔒</div>
+                            <h3 class="feature-title">End-to-End Encryption</h3>
+                            <p class="feature-description">Your files are encrypted in your browser before upload. Only you and authorized recipients can access them.</p>
+                        </div>
+                        <div class="feature-card" onclick="showFeatureModal('sharing')">
+                            <div class="feature-icon">📤</div>
+                            <h3 class="feature-title">Secure Sharing</h3>
+                            <p class="feature-description">Share files with password-protected links that expire automatically for maximum security.</p>
+                        </div>
+                        <div class="feature-card" onclick="showFeatureModal('performance')">
+                            <div class="feature-icon">🚀</div>
+                            <h3 class="feature-title">Fast & Reliable</h3>
+                            <p class="feature-description">Built with modern web technologies for fast uploads, downloads, and real-time collaboration.</p>
+                        </div>
+                        <div class="feature-card" onclick="showFeatureModal('privacy')">
+                            <div class="feature-icon">🛡️</div>
+                            <h3 class="feature-title">Privacy First</h3>
+                            <p class="feature-description">Your data never leaves your control. Zero-knowledge architecture ensures your privacy.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Page -->
+                <div id="about" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">📖</span>
+                                About Cryptee
+                            </h2>
+                        </div>
+                        <div class="about-content">
+                            <div class="about-section">
+                                <h3>🔐 Our Mission</h3>
+                                <p>Cryptee is a secure, end-to-end encrypted file sharing web application that prioritizes user privacy and data security. Files are encrypted client-side before transmission and can only be decrypted by authorized recipients.</p>
+                            </div>
+
+                            <div class="about-section">
+                                <h3>✨ Key Features</h3>
+                                <ul>
+                                    <li><strong>End-to-End Encryption:</strong> Files encrypted in browser using AES-256-GCM with PBKDF2 key derivation</li>
+                                    <li><strong>Secure Sharing:</strong> Time-limited, password-protected sharing links with expiration controls</li>
+                                    <li><strong>User Authentication:</strong> JWT-based authentication with scrypt password hashing</li>
+                                    <li><strong>File Management:</strong> Upload, organize, and manage encrypted files with version control</li>
+                                    <li><strong>Responsive UI:</strong> Modern, mobile-friendly interface with smooth navigation</li>
+                                    <li><strong>High Performance:</strong> Optimized for 50+ concurrent users with connection pooling</li>
+                                    <li><strong>Self-Destructing Files:</strong> Automatic file deletion after expiration or download limits</li>
+                                    <li><strong>Activity Tracking:</strong> Complete history of sent and received files</li>
+                                    <li><strong>Multi-Format Support:</strong> Documents, videos, audio, images, and any file type up to 100MB</li>
+                                    <li><strong>Real-Time Encryption:</strong> Client-side encryption with progress indicators</li>
+                                    <li><strong>Password Protection:</strong> Dual-layer security with encryption keys and share passwords</li>
+                                    <li><strong>Account Security:</strong> Login attempt monitoring with automatic account locking</li>
+                                    <li><strong>Settings Management:</strong> Language, theme, and notification preferences</li>
+                                    <li><strong>Help & Support:</strong> Comprehensive documentation with step-by-step guides</li>
+                                    <li><strong>Bug Reporting:</strong> Integrated feedback system with browser information</li>
+                                    <li><strong>Rate Limiting:</strong> Protection against abuse with configurable limits</li>
+                                    <li><strong>Audit Logging:</strong> Complete activity tracking for security and compliance</li>
+                                    <li><strong>Mobile Navigation:</strong> Bottom navigation bar optimized for mobile devices</li>
+                                    <li><strong>Accessibility:</strong> WCAG compliant with keyboard navigation and screen reader support</li>
+                                    <li><strong>Modern Web Standards:</strong> Built with HTML5, CSS3, and ES6+ JavaScript</li>
+                                </ul>
+                            </div>
+
+                            <div class="about-section">
+                                <h3>🛠️ Technology Stack</h3>
+                                <ul>
+                                    <li><strong>Backend:</strong> Python Flask with SQLAlchemy ORM and connection pooling</li>
+                                    <li><strong>Database:</strong> SQLite (development) / MySQL/PostgreSQL (production)</li>
+                                    <li><strong>Authentication:</strong> JWT with scrypt password hashing and account locking</li>
+                                    <li><strong>Encryption:</strong> Web Crypto API (client) + Python cryptography library with AES-256-GCM</li>
+                                    <li><strong>Frontend:</strong> HTML5, CSS3, ES6+ JavaScript with modern async/await</li>
+                                    <li><strong>Performance:</strong> Flask threading, database connection pooling, Redis rate limiting</li>
+                                    <li><strong>Security:</strong> PBKDF2 key derivation, audit logging, rate limiting, CORS protection</li>
+                                    <li><strong>Monitoring:</strong> Request timing, slow request detection, comprehensive logging</li>
+                                    <li><strong>Scalability:</strong> Optimized for 50+ concurrent users with efficient resource management</li>
+                                    <li><strong>Accessibility:</strong> WCAG compliant with ARIA labels and keyboard navigation</li>
+                                </ul>
+                            </div>
+
+                            <div class="about-section">
+                                <h3>⚡ Performance & Scalability</h3>
+                                <p style="margin-bottom: 1rem;">Cryptee has been optimized to handle high concurrent loads while maintaining security and performance:</p>
+                                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--accent-green); margin-bottom: 1rem;">
+                                    <h5 style="margin: 0 0 0.5rem 0; color: var(--accent-green);">🚀 High-Performance Architecture</h5>
+                                    <ul style="margin: 0; padding-left: 1rem; font-size: 0.9rem;">
+                                        <li><strong>Concurrent Users:</strong> Successfully tested with 50+ simultaneous users</li>
+                                        <li><strong>Response Time:</strong> Average <0.4 seconds under load</li>
+                                        <li><strong>Threading:</strong> Flask multi-threading for concurrent request handling</li>
+                                        <li><strong>Connection Pooling:</strong> Database connections efficiently managed</li>
+                                        <li><strong>Rate Limiting:</strong> Redis-backed protection against abuse</li>
+                                        <li><strong>Request Monitoring:</strong> Real-time performance tracking and slow request detection</li>
+                                    </ul>
+                                </div>
+                                <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                                    <h5 style="margin: 0 0 0.5rem 0; color: #d97706;">🔒 Security Features</h5>
+                                    <ul style="margin: 0; padding-left: 1rem; font-size: 0.9rem;">
+                                        <li><strong>Account Protection:</strong> Automatic locking after failed login attempts</li>
+                                        <li><strong>Audit Logging:</strong> Complete activity tracking for compliance</li>
+                                        <li><strong>Session Management:</strong> Secure JWT tokens with refresh capabilities</li>
+                                        <li><strong>Data Encryption:</strong> AES-256-GCM with PBKDF2 key derivation</li>
+                                        <li><strong>Input Validation:</strong> Comprehensive sanitization and validation</li>
+                                        <li><strong>CORS Protection:</strong> Configurable cross-origin resource sharing</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="about-section">
+                                <h3>👨‍💻 Author</h3>
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), var(--accent-green)); border: 3px solid var(--primary-blue); display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; font-weight: bold;">
+                                        MCU
+                                    </div>
+                                    <div>
+                                        <h4 style="margin: 0 0 0.5rem 0; color: var(--gray-900);">MvogoNka Christophe Ulrich</h4>
+                                        <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Cyber Security Bachelor's Student & Self-Improvement Enthusiast</p>
+                                    </div>
+                                </div>
+                                <p style="margin-bottom: 1rem;">Cryptee was created by MvogoNka Christophe Ulrich, a dedicated cyber security student passionate about building secure applications and continuous self-improvement. As a bachelor's student in cyber security, Ulrich combines academic knowledge with practical development skills to create applications that prioritize user privacy and data protection.</p>
+                                <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary-blue);">
+                                    <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-blue);">Mission</h5>
+                                    <p style="margin: 0; font-size: 0.9rem; color: var(--gray-700);">To make secure file sharing accessible to everyone, without compromising on privacy or user experience.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settings" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">⚙️</span>
+                                Settings
+                            </h2>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>🌐 Language</h3>
+                            <div class="settings-item">
+                                <span class="settings-label">App Language</span>
+                                <div class="settings-control">
+                                    <select class="form-control" style="width: auto;" onchange="changeLanguage(this.value)">
+                                        <option value="en">English</option>
+                                        <option value="fr">Français</option>
+                                        <option value="es">Español</option>
+                                        <option value="de">Deutsch</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>🎨 Theme</h3>
+                            <div class="settings-item">
+                                <span class="settings-label">App Theme</span>
+                                <div class="settings-control">
+                                    <select class="form-control" style="width: auto;" onchange="changeTheme(this.value)">
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="auto">Auto</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>🔔 Notifications</h3>
+                            <div class="settings-item">
+                                <span class="settings-label">File received notifications</span>
+                                <div class="settings-control">
+                                    <label class="switch">
+                                        <input type="checkbox" checked onchange="toggleNotifications(this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Send Page -->
+                <div id="send" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">📤</span>
+                                Send Files Securely
+                            </h2>
+                        </div>
+
+                        <!-- File Type Selection -->
+                        <div class="file-type-grid">
+                            <div class="file-type-option" onclick="selectFileType('document')" id="document-option">
+                                <div class="file-type-icon">📄</div>
+                                <div class="file-type-label">Documents</div>
+                                <div class="file-type-desc">PDF, Word, Excel, etc.</div>
+                            </div>
+                            <div class="file-type-option" onclick="selectFileType('video')" id="video-option">
+                                <div class="file-type-icon">🎥</div>
+                                <div class="file-type-label">Videos</div>
+                                <div class="file-type-desc">MP4, AVI, MOV, etc.</div>
+                            </div>
+                            <div class="file-type-option" onclick="selectFileType('audio')" id="audio-option">
+                                <div class="file-type-icon">🎵</div>
+                                <div class="file-type-label">Audio</div>
+                                <div class="file-type-desc">MP3, WAV, FLAC, etc.</div>
+                            </div>
+                            <div class="file-type-option" onclick="selectFileType('picture')" id="picture-option">
+                                <div class="file-type-icon">🖼️</div>
+                                <div class="file-type-label">Pictures</div>
+                                <div class="file-type-desc">JPG, PNG, GIF, etc.</div>
+                            </div>
+                            <div class="file-type-option active" onclick="selectFileType('other')" id="other-option">
+                                <div class="file-type-icon">📦</div>
+                                <div class="file-type-label">Other Files</div>
+                                <div class="file-type-desc">ZIP, EXE, or any file</div>
+                            </div>
+                        </div>
+
+                        <div class="upload-area" onclick="document.getElementById('file-input').click()" id="upload-area">
+                            <div class="upload-icon" id="upload-icon">📁</div>
+                            <div class="upload-text" id="upload-text">Click to select files or drag and drop</div>
+                            <div class="upload-hint" id="upload-hint">Supports all file types up to 100MB</div>
+                        </div>
+
+                        <input type="file" id="file-input" style="display: none;" onchange="handleFileSelect()">
+
+                        <div id="file-info" style="display: none; margin-top: 1rem;">
+                            <div class="status info">
+                                <strong>Selected:</strong> <span id="file-name"></span> (<span id="file-size"></span>)
+                            </div>
+                        </div>
+
+                        <!-- Encryption Section -->
+                        <div id="encryption-section" style="display: none; margin-top: 2rem;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <span class="card-icon">🔐</span>
+                                        Encrypt Your File
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="encryption-info" style="margin-bottom: 1.5rem;">
+                                        <div class="status info">
+                                            <strong>🔒 Security First:</strong> Your file will be encrypted with AES-256 encryption before sharing.
+                                            Only the recipient with the decryption key can access it.
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Create Encryption Key</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="encryption-key" placeholder="Enter a strong encryption key" required minlength="8">
+                                            <span class="input-icon">
+                                                <i class="fas fa-key" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-text">Minimum 8 characters. This key will be needed to decrypt the file.</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Confirm Encryption Key</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="confirm-encryption-key" placeholder="Confirm your encryption key" required minlength="8">
+                                            <span class="input-icon">
+                                                <i class="fas fa-key" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <div class="form-text">Re-enter the same key to confirm.</div>
+                                    </div>
+
+                                    <div class="encryption-strength" id="key-strength" style="margin-top: 0.5rem; display: none;">
+                                        <div class="strength-bar">
+                                            <div class="strength-fill" id="strength-fill"></div>
+                                        </div>
+                                        <div class="strength-text" id="strength-text"></div>
+                                    </div>
+
+                                    <div class="encryption-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                                        <button type="button" class="btn btn-success" onclick="encryptAndProceed()" id="encrypt-btn">
+                                            <i class="fas fa-lock"></i> Encrypt & Continue
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="cancelEncryption()">
+                                            <i class="fas fa-arrow-left"></i> Back to File Selection
+                                        </button>
+                                    </div>
+
+                                    <div id="encryption-status" style="margin-top: 1rem; display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form id="send-form" style="display: none; margin-top: 2rem;">
+                            <!-- Encryption Key Display -->
+                            <div class="encryption-key-display" style="margin-bottom: 2rem;">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title" style="font-size: 1rem;">
+                                            <span class="card-icon">🔑</span>
+                                            Your Encryption Key
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="status info">
+                                            <strong>⚠️ Important:</strong> Share this encryption key with your recipient separately from the file.
+                                            They will need it to decrypt and access the file.
+                                        </div>
+                                        <div class="key-display" style="margin-top: 1rem;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="display-encryption-key" readonly style="background: var(--gray-50); font-family: monospace; font-weight: bold;">
+                                                <button type="button" class="btn btn-outline" onclick="copyEncryptionKey()" style="border-left: none;">
+                                                    <i class="fas fa-copy"></i> Copy
+                                                </button>
+                                            </div>
+                                            <div class="form-text">Click copy to easily share this key with your recipient.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Recipient Email</label>
+                                <input type="email" class="form-control" id="recipient-email" placeholder="recipient@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Message (optional)</label>
+                                <textarea class="form-control" id="send-message" rows="3" placeholder="Add a personal message..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Additional Password Protection (Optional)</label>
+                                <input type="password" class="form-control" id="share-password" placeholder="Extra password for the share link">
+                                <div class="form-text">This is separate from your encryption key. Recipients need both to access the file.</div>
+                            </div>
+
+                            <!-- Self-Destructing Files Feature -->
+                            <div class="form-group">
+                                <label class="form-label">File Expiration (Self-Destruct)</label>
+                                <div class="expiration-options">
+                                    <div class="expiration-option" onclick="selectExpiration('never')" id="exp-never">
+                                        <div class="exp-icon">♾️</div>
+                                        <div class="exp-label">Never</div>
+                                        <div class="exp-desc">File stays forever</div>
+                                    </div>
+                                    <div class="expiration-option" onclick="selectExpiration('1hour')" id="exp-1hour">
+                                        <div class="exp-icon">⏰</div>
+                                        <div class="exp-label">1 Hour</div>
+                                        <div class="exp-desc">Auto-delete in 1 hour</div>
+                                    </div>
+                                    <div class="expiration-option" onclick="selectExpiration('24hours')" id="exp-24hours">
+                                        <div class="exp-icon">📅</div>
+                                        <div class="exp-label">24 Hours</div>
+                                        <div class="exp-desc">Auto-delete in 1 day</div>
+                                    </div>
+                                    <div class="expiration-option" onclick="selectExpiration('7days')" id="exp-7days">
+                                        <div class="exp-icon">📆</div>
+                                        <div class="exp-label">7 Days</div>
+                                        <div class="exp-desc">Auto-delete in 1 week</div>
+                                    </div>
+                                    <div class="expiration-option" onclick="selectExpiration('downloads')" id="exp-downloads">
+                                        <div class="exp-icon">📊</div>
+                                        <div class="exp-label">After Downloads</div>
+                                        <div class="exp-desc">Delete after X downloads</div>
+                                    </div>
+                                </div>
+                                <div id="download-limit-container" style="display: none; margin-top: 1rem;">
+                                    <input type="number" class="form-control" id="download-limit" placeholder="Number of downloads" min="1" max="100">
+                                    <div class="form-text">File will be deleted after this many downloads</div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success" onclick="sendFile(); return false;">
+                                <i class="fas fa-paper-plane"></i> Send File Securely
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Receive Page -->
+                <div id="receive" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">📥</span>
+                                Received Files
+                            </h2>
+                        </div>
+
+                        <!-- Upload Shared File Section -->
+                        <div class="upload-section">
+                            <h3>📁 Upload Shared File</h3>
+                            <p class="section-desc">Have a shared file? Upload it here to access its contents.</p>
+
+                            <div class="upload-area" onclick="document.getElementById('receive-file-input').click()">
+                                <div class="upload-icon">🔐</div>
+                                <div class="upload-text">Click to upload encrypted file</div>
+                                <div class="upload-hint">Select the shared file you received via email or link</div>
+                            </div>
+
+                            <input type="file" id="receive-file-input" style="display: none;" onchange="handleReceivedFile()">
+                        </div>
+
+                        <!-- Received Files List -->
+                        <div class="received-files-section">
+                            <h3>📋 Your Received Files</h3>
+                            <p class="section-desc">Files you've successfully received and decrypted.</p>
+
+                            <div id="received-files-list" class="received-files-list">
+                                <!-- Files will be loaded here -->
+                                <div class="empty-state">
+                                    <div class="empty-icon">📭</div>
+                                    <div class="empty-text">No files received yet</div>
+                                    <div class="empty-desc">Files you receive will appear here with timestamps</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Page -->
+                <div id="history" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">📚</span>
+                                File History
+                            </h2>
+                        </div>
+
+                        <!-- History Tabs -->
+                        <div class="history-tabs">
+                            <button class="tab-btn active" onclick="switchHistoryTab('all')" id="tab-all">
+                                <i class="fas fa-list"></i> All Files
+                            </button>
+                            <button class="tab-btn" onclick="switchHistoryTab('sent')" id="tab-sent">
+                                <i class="fas fa-paper-plane"></i> Sent Files
+                            </button>
+                            <button class="tab-btn" onclick="switchHistoryTab('received')" id="tab-received">
+                                <i class="fas fa-inbox"></i> Received Files
+                            </button>
+                        </div>
+
+                        <!-- History Content -->
+                        <div class="history-content">
+                            <div id="history-list" class="history-list">
+                                <!-- Files will be loaded here -->
+                                <div class="empty-state">
+                                    <div class="empty-icon">📚</div>
+                                    <div class="empty-text">No file history yet</div>
+                                    <div class="empty-desc">Your sent and received files will appear here</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help Page -->
+                <div id="help" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">📚</span>
+                                How to Use Cryptee
+                            </h2>
+                        </div>
+
+                        <!-- Introduction -->
+                        <div class="help-section">
+                            <h3>🚀 Welcome to Cryptee</h3>
+                            <p class="help-intro">
+                                Cryptee is your secure file sharing companion. Send documents, videos, audio files, and pictures
+                                with bank-level encryption. Your files are encrypted before leaving your device and can only be
+                                decrypted by intended recipients.
+                            </p>
+                        </div>
+
+                        <!-- Quick Start Guide -->
+                        <div class="help-section">
+                            <h3>⚡ Quick Start Guide</h3>
+                            <div class="steps-grid">
+                                <div class="step-card" onclick="navigateToPage('register')">
+                                    <div class="step-number">1</div>
+                                    <div class="step-icon">👤</div>
+                                    <h4>Sign Up or Login</h4>
+                                    <p>Create your account or sign in to access all features</p>
+                                </div>
+                                <div class="step-card" onclick="navigateToPage('send')">
+                                    <div class="step-number">2</div>
+                                    <div class="step-icon">📤</div>
+                                    <h4>Send Files</h4>
+                                    <p>Upload and encrypt files to share securely</p>
+                                </div>
+                                <div class="step-card" onclick="navigateToPage('receive')">
+                                    <div class="step-number">3</div>
+                                    <div class="step-icon">📥</div>
+                                    <h4>Receive Files</h4>
+                                    <p>Access and download files shared with you</p>
+                                </div>
+                                <div class="step-card" onclick="navigateToPage('history')">
+                                    <div class="step-number">4</div>
+                                    <div class="step-icon">📋</div>
+                                    <h4>Track History</h4>
+                                    <p>Monitor all your file sharing activities</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Instructions -->
+                        <div class="help-section">
+                            <h3>📖 Step-by-Step Instructions</h3>
+
+                            <div class="instruction-accordion">
+                                <div class="accordion-item">
+                                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                                        <span class="accordion-icon">👤</span>
+                                        <span class="accordion-title">Getting Started: Sign Up or Login</span>
+                                        <span class="accordion-arrow">▼</span>
+                                    </button>
+                                    <div class="accordion-content">
+                                        <ol>
+                                            <li>Click "Register" to create a new account or "Login" if you already have one</li>
+                                            <li>Fill in your email and create a secure password (minimum 6 characters)</li>
+                                            <li>Verify your email if required</li>
+                                            <li>You're now ready to use Cryptee's secure file sharing!</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                                        <span class="accordion-icon">🔐</span>
+                                        <span class="accordion-title">Upload and Encrypt Data</span>
+                                        <span class="accordion-arrow">▼</span>
+                                    </button>
+                                    <div class="accordion-content">
+                                        <ol>
+                                            <li>Navigate to the "Send" page from the menu</li>
+                                            <li>Choose your file type: Documents, Videos, Audio, Pictures, or Other</li>
+                                            <li>Click "Click to select files" or drag and drop your file</li>
+                                            <li>Enter the recipient's email address</li>
+                                            <li>Add an optional password for extra security</li>
+                                            <li>Include a personal message if desired</li>
+                                            <li>Click "Send File Securely" - your file is encrypted and sent!</li>
+                                        </ol>
+                                        <div class="help-note">
+                                            <strong>🔒 Security Note:</strong> Files are encrypted in your browser before upload.
+                                            Even we cannot access your files without the decryption key.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                                        <span class="accordion-icon">📁</span>
+                                        <span class="accordion-title">Access and Manage Files</span>
+                                        <span class="accordion-arrow">▼</span>
+                                    </button>
+                                    <div class="accordion-content">
+                                        <ol>
+                                            <li>Go to the "Receive" page to see files shared with you</li>
+                                            <li>Upload any shared files you've received via email or link</li>
+                                            <li>Files are automatically decrypted and made available for download</li>
+                                            <li>Check the "History" page to see all your past activities</li>
+                                            <li>Use the tabs to filter between sent and received files</li>
+                                            <li>Click timestamps to see when files were shared</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                                        <span class="accordion-icon">📤</span>
+                                        <span class="accordion-title">Share Files Securely</span>
+                                        <span class="accordion-arrow">▼</span>
+                                    </button>
+                                    <div class="accordion-content">
+                                        <ol>
+                                            <li>After uploading a file, you'll receive a secure sharing link</li>
+                                            <li>Share this link with your intended recipient</li>
+                                            <li>If you set a password, provide it separately for maximum security</li>
+                                            <li>The recipient can access the file using the link and password</li>
+                                            <li>Files are automatically deleted after expiration (default: 7 days)</li>
+                                            <li>You can revoke access anytime from the History page</li>
+                                        </ol>
+                                        <div class="help-tip">
+                                            <strong>💡 Pro Tip:</strong> Always use passwords for sensitive files and share
+                                            the password through a different channel than the file link.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                                        <span class="accordion-icon">⚙️</span>
+                                        <span class="accordion-title">Settings and Preferences</span>
+                                        <span class="accordion-arrow">▼</span>
+                                    </button>
+                                    <div class="accordion-content">
+                                        <ol>
+                                            <li>Access Settings from the navigation menu</li>
+                                            <li>Change your language preferences</li>
+                                            <li>Toggle dark/light theme (coming soon)</li>
+                                            <li>Enable/disable notifications</li>
+                                            <li>Update your profile information</li>
+                                            <li>Change your password regularly for security</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Section -->
+                        <div class="help-section">
+                            <h3>❓ Frequently Asked Questions</h3>
+                            <div class="faq-list">
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>🔒 How secure is Cryptee?</span>
+                                        <span class="faq-arrow">▶</span>
+                                    </button>
+                                    <div class="faq-answer">
+                                        Cryptee uses AES-256 encryption, the same standard used by banks and governments.
+                                        Files are encrypted in your browser before upload, and only you and your recipients
+                                        have access to the decryption keys.
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>📏 What are the file size limits?</span>
+                                        <span class="faq-arrow">▶</span>
+                                    </button>
+                                    <div class="faq-answer">
+                                        You can upload files up to 100MB in size. For larger files, consider compressing
+                                        them or splitting them into smaller parts.
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>⏰ How long do shared files remain available?</span>
+                                        <span class="faq-arrow">▶</span>
+                                    </button>
+                                    <div class="faq-answer">
+                                        Shared files are available for 7 days by default. You can extend this period
+                                        or revoke access anytime from the History page.
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>🌐 Can I use Cryptee on mobile devices?</span>
+                                        <span class="faq-arrow">▶</span>
+                                    </button>
+                                    <div class="faq-answer">
+                                        Yes! Cryptee is fully responsive and works perfectly on phones, tablets,
+                                        and all modern browsers. The interface adapts to your screen size.
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>💰 Is Cryptee free to use?</span>
+                                        <span class="faq-arrow">▶</span>
+                                    </button>
+                                    <div class="faq-answer">
+                                        Cryptee offers a generous free tier with basic file sharing. Premium features
+                                        like larger file limits and advanced sharing controls are available with a subscription.
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFaq(this)">
+                                        <span>🆘 What if I forget my password?</span>
+                                        <span class="faq-arrow">▶</span>
+                                    </button>
+                                    <div class="faq-answer">
+                                        Use the "Forgot Password" link on the login page. We'll send you a secure
+                                        reset link to your registered email address.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Support Section -->
+                        <div class="help-section">
+                            <h3>🆘 Need More Help?</h3>
+                            <div class="support-options">
+                                <div class="support-card" onclick="navigateToPage('report')">
+                                    <div class="support-icon">🐛</div>
+                                    <h4>Report a Bug</h4>
+                                    <p>Found an issue? Help us improve by reporting it.</p>
+                                </div>
+                                <div class="support-card">
+                                    <div class="support-icon">📧</div>
+                                    <h4>Contact Support</h4>
+                                    <p>Email us at support@cryptee.com for assistance.</p>
+                                </div>
+                                <div class="support-card">
+                                    <div class="support-icon">📖</div>
+                                    <h4>Documentation</h4>
+                                    <p>Visit docs.cryptee.com for detailed guides.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Bug Page -->
+                <div id="report" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">🐛</span>
+                                Report a Bug or Give Feedback
+                            </h2>
+                        </div>
+
+                        <div class="report-intro">
+                            <p>
+                                Help us improve Cryptee! Your feedback is valuable to us. Please rate your experience
+                                and let us know about any issues you've encountered or suggestions you have.
+                            </p>
+                        </div>
+
+                        <form id="bug-report-form" onsubmit="submitBugReport(event)">
+                            <!-- Rating Section -->
+                            <div class="form-group">
+                                <label class="form-label">Rate Your Experience</label>
+                                <div class="rating-stars">
+                                    <span class="star" data-rating="1" onclick="setRating(1)">☆</span>
+                                    <span class="star" data-rating="2" onclick="setRating(2)">☆</span>
+                                    <span class="star" data-rating="3" onclick="setRating(3)">☆</span>
+                                    <span class="star" data-rating="4" onclick="setRating(4)">☆</span>
+                                    <span class="star" data-rating="5" onclick="setRating(5)">☆</span>
+                                </div>
+                                <div class="rating-labels">
+                                    <span>Poor</span>
+                                    <span>Excellent</span>
+                                </div>
+                                <input type="hidden" id="rating-value" name="rating" required>
+                            </div>
+
+                            <!-- Bug Type -->
+                            <div class="form-group">
+                                <label class="form-label">What type of feedback is this?</label>
+                                <select class="form-control" id="feedback-type" name="type" required>
+                                    <option value="">Select feedback type...</option>
+                                    <option value="bug">🐛 Bug Report</option>
+                                    <option value="feature">💡 Feature Request</option>
+                                    <option value="improvement">✨ Improvement Suggestion</option>
+                                    <option value="usability">🎯 Usability Issue</option>
+                                    <option value="performance">⚡ Performance Issue</option>
+                                    <option value="other">❓ Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Subject -->
+                            <div class="form-group">
+                                <label class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="report-subject" name="subject"
+                                       placeholder="Brief description of the issue or suggestion" required>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="report-description" name="description" rows="6"
+                                          placeholder="Please provide detailed information about the bug, steps to reproduce, or your suggestion. Include screenshots if possible." required></textarea>
+                            </div>
+
+                            <!-- Browser Info -->
+                            <div class="form-group">
+                                <label class="form-label">Browser & System Information</label>
+                                <div class="browser-info">
+                                    <div class="info-item">
+                                        <strong>Browser:</strong> <span id="browser-info">Detecting...</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>OS:</strong> <span id="os-info">Detecting...</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Screen:</strong> <span id="screen-info">Detecting...</span>
+                                    </div>
+                                </div>
+                                <div class="form-text">
+                                    This information helps us diagnose issues. It will be automatically included.
+                                </div>
+                            </div>
+
+                            <!-- Contact Info -->
+                            <div class="form-group">
+                                <label class="form-label">Contact Email (Optional)</label>
+                                <input type="email" class="form-control" id="contact-email" name="email"
+                                       placeholder="your.email@example.com">
+                                <div class="form-text">
+                                    Provide your email if you'd like us to follow up on your feedback.
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success" id="submit-report-btn">
+                                    <i class="fas fa-paper-plane"></i> Submit Feedback
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="clearReportForm()">
+                                    <i class="fas fa-undo"></i> Clear Form
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Submission Status -->
+                        <div id="report-status" class="status-message" style="display: none;"></div>
+
+                        <!-- Recent Reports -->
+                        <div class="recent-reports" id="recent-reports" style="display: none;">
+                            <h3>📋 Your Recent Feedback</h3>
+                            <div id="reports-list" class="reports-list">
+                                <!-- Recent reports will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Page -->
+                <div id="login" class="page">
+                    <div class="card" style="max-width: 400px; margin: 0 auto;">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">🔑</span>
+                                Login to Cryptee
+                            </h2>
+                        </div>
+
+                        <div id="login-status" class="status info" style="display: none;"></div>
+
+                        <form id="loginForm" novalidate>
+                            <div class="form-group">
+                                <label class="form-label" for="login-email">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i> Email Address
+                                </label>
+                                <div class="input-group">
+                                    <input type="email" class="form-control" id="login-email" placeholder="your@email.com" required autocomplete="email" aria-describedby="email-help">
+                                    <span class="input-icon">
+                                        <i class="fas fa-envelope" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="form-text" id="email-help">Enter your registered email address</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="login-password">
+                                    <i class="fas fa-lock" aria-hidden="true"></i> Password
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="login-password" placeholder="Your password" required autocomplete="current-password" aria-describedby="password-help">
+                                    <span class="input-icon">
+                                        <i class="fas fa-lock" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="form-text" id="password-help">Enter your account password</div>
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;" for="login-remember">
+                                    <input type="checkbox" id="login-remember" style="margin: 0;">
+                                    <span>Remember me for 30 days</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn" onclick="login(); return false;" aria-describedby="login-status">
+                                <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In to Your Account
+                            </button>
+                        </form>
+
+                        <div style="text-align: center; margin-top: 1.5rem;">
+                            <p>Don't have an account? <a href="#" onclick="navigateToPage('register'); return false;" style="color: var(--primary-blue);">Register here</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Page -->
+                <div id="register" class="page">
+                    <div class="card" style="max-width: 400px; margin: 0 auto;">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="card-icon">📝</span>
+                                Create Account
+                            </h2>
+                        </div>
+
+                        <div id="register-status" class="status info" style="display: none;"></div>
+
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" id="reg-username" placeholder="Choose a username" required minlength="3" maxlength="50">
+                                <div class="form-text">3-50 characters, letters and numbers only</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="reg-email" placeholder="your@email.com" required>
+                                <div class="form-text">We'll never share your email</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" id="reg-password" placeholder="At least 6 characters" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="reg-confirm-password" placeholder="Confirm your password" required>
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                                    <input type="checkbox" id="reg-terms" required style="margin-top: 0.25rem;">
+                                    <span>I agree to the <a href="#" style="color: var(--primary-blue);">Terms & Conditions</a> and <a href="#" style="color: var(--primary-blue);">Privacy Policy</a></span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-success" onclick="register(); return false;">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </form>
+
+                        <div style="text-align: center; margin-top: 1.5rem;">
+                            <p>Already have an account? <a href="#" onclick="navigateToPage('login'); return false;" style="color: var(--primary-blue);">Login here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Feature Modal -->
+    <div id="feature-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 id="modal-title" style="margin: 0; color: var(--gray-900);">Feature Details</h2>
+                <button onclick="closeFeatureModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray-500);">&times;</button>
+            </div>
+            <div id="modal-description"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let authToken = localStorage.getItem('cryptee_token');
+        let currentPage = 'home';
+
+        // Session security variables
+        let sessionStartTime = Date.now();
+        let lastActivityTime = Date.now();
+        let clickCount = 0;
+        let clickTimestamps = [];
+        let networkStatus = navigator.onLine;
+        let sessionMonitorInterval = null;
+        let suspiciousActivityDetected = false;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check URL path to determine initial page
+            const path = window.location.pathname;
+            let initialPage = 'home';
+
+            if (path === '/about') {
+                initialPage = 'about';
+            }
+
+            // Show initial page
+            showPage(initialPage);
+            updateNavButtons();
+
+            // Validate stored token
+            validateStoredToken();
+        });
+
+        // Page navigation with authentication checks
+        function navigateToPage(pageName) {
+            // Check authentication for protected pages
+            const protectedPages = ['send', 'receive', 'history'];
+            if (protectedPages.includes(pageName) && !authToken) {
+                showStatus('Please login to access this page', 'error');
+                navigateToPage('login');
+                return;
+            }
+
+            // Update URL
+            const newPath = pageName === 'home' ? '/' : '/' + pageName;
+            window.history.pushState({page: pageName}, '', newPath);
+
+            // Show page
+            showPage(pageName);
+        }
+
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show selected page
+            const targetPage = document.getElementById(pageName);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // Update navigation
+            currentPage = pageName;
+            updateNavButtons();
+
+            // Handle page-specific logic
+            if (pageName === 'send' && authToken) {
+                document.getElementById('mobile-nav').style.display = 'flex';
+            } else if (pageName === 'receive' && authToken) {
+                document.getElementById('mobile-nav').style.display = 'flex';
+                loadReceivedFiles(); // Load received files when page is shown
+            } else if (pageName === 'history' && authToken) {
+                document.getElementById('mobile-nav').style.display = 'flex';
+                loadFileHistory(); // Load file history when page is shown
+            } else if (pageName === 'report') {
+                initReportPage(); // Initialize report page
+            } else {
+                document.getElementById('mobile-nav').style.display = 'none';
+            }
+        }
+
+        function updateNavButtons() {
+            // Update desktop nav
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            if (currentPage === 'home') {
+                document.getElementById('home-btn').classList.add('active');
+            } else if (currentPage === 'about') {
+                document.getElementById('about-btn').classList.add('active');
+            } else if (currentPage === 'settings') {
+                document.getElementById('settings-btn').classList.add('active');
+            } else if (currentPage === 'help') {
+                document.getElementById('help-btn').classList.add('active');
+            } else if (currentPage === 'report') {
+                document.getElementById('report-btn').classList.add('active');
+            } else if (currentPage === 'send') {
+                document.getElementById('send-btn').classList.add('active');
+            } else if (currentPage === 'receive') {
+                document.getElementById('receive-btn').classList.add('active');
+            } else if (currentPage === 'history') {
+                document.getElementById('history-btn').classList.add('active');
+            }
+
+            // Update mobile nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            if (currentPage === 'send') {
+                document.querySelector('.nav-item:nth-child(1)').classList.add('active');
+            } else if (currentPage === 'receive') {
+                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+            } else if (currentPage === 'settings') {
+                document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+            }
+        }
+
+        // Authentication functions
+        async function validateStoredToken() {
+            if (!authToken) return;
+
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    currentUser = userData;
+                    showAuthenticatedView();
+                } else {
+                    localStorage.removeItem('cryptee_token');
+                    authToken = null;
+                }
+            } catch (error) {
+                console.warn('Token validation failed:', error);
+            }
+        }
+
+        function showAuthenticatedView() {
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('register-btn').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'inline-flex';
+
+            // Show authenticated navigation
+            document.querySelectorAll('.auth-only').forEach(btn => {
+                btn.classList.add('show');
+            });
+
+            updateUserInfo();
+
+            // Initialize session security monitoring
+            initSessionSecurity();
+        }
+
+        function updateUserInfo() {
+            if (currentUser) {
+                document.getElementById('user-info').textContent = `Welcome, ${currentUser.username}!`;
+            } else {
+                document.getElementById('user-info').textContent = 'Not logged in';
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const remember = document.getElementById('login-remember').checked;
+            const submitBtn = document.querySelector('#loginForm .btn');
+
+            if (!email || !password) {
+                showStatus('Please fill in all fields', 'error', 'login-status');
+                document.getElementById('login-email').focus();
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Signing In...';
+            showStatus('Signing you in...', 'info', 'login-status');
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, remember })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.access_token;
+                    localStorage.setItem('cryptee_token', authToken);
+                    currentUser = data.user;
+                    showStatus('Welcome back! Redirecting...', 'success', 'login-status');
+                    showAuthenticatedView();
+                    setTimeout(() => navigateToPage('send'), 1500);
+                } else {
+                    showStatus(data.error || 'Login failed. Please check your credentials.', 'error', 'login-status');
+                    if (data.error.includes('Invalid')) {
+                        document.getElementById('login-password').focus();
+                    }
+                }
+            } catch (error) {
+                showStatus('Network error. Please check your connection and try again.', 'error', 'login-status');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In to Your Account';
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            const termsAccepted = document.getElementById('reg-terms').checked;
+
+            if (!username || !email || !password || !confirmPassword) {
+                showStatus('Please fill in all fields', 'error', 'register-status');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showStatus('Passwords do not match', 'error', 'register-status');
+                return;
+            }
+
+            if (!termsAccepted) {
+                showStatus('Please accept the terms and conditions', 'error', 'register-status');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus('Account created successfully! You can now login.', 'success', 'register-status');
+                    setTimeout(() => navigateToPage('login'), 2000);
+                } else {
+                    showStatus(data.error || 'Registration failed', 'error', 'register-status');
+                }
+            } catch (error) {
+                showStatus('Network error. Please try again.', 'error', 'register-status');
+            }
+        }
+
+        function logout() {
+            // Stop session monitoring
+            stopSessionMonitoring();
+
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('cryptee_token');
+
+            // Hide authenticated navigation
+            document.querySelectorAll('.auth-only').forEach(btn => {
+                btn.classList.remove('show');
+            });
+
+            location.reload();
+        }
+
+        // Session Security Functions
+        function initSessionSecurity() {
+            if (!authToken) return;
+
+            console.log('🔒 Initializing session security monitoring...');
+
+            // Start session monitoring
+            startSessionMonitoring();
+
+            // Setup event listeners for session destruction triggers
+            setupSessionEventListeners();
+
+            // Send initial session heartbeat
+            sendSessionHeartbeat();
+        }
+
+        function startSessionMonitoring() {
+            // Monitor session every 30 seconds
+            sessionMonitorInterval = setInterval(() => {
+                checkSessionHealth();
+                detectSuspiciousActivity();
+            }, 30000);
+
+            console.log('⏰ Session monitoring started (30s intervals)');
+        }
+
+        function setupSessionEventListeners() {
+            // Tab visibility change (user leaves tab)
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            // Network status changes
+            window.addEventListener('online', handleNetworkChange);
+            window.addEventListener('offline', handleNetworkChange);
+
+            // User activity monitoring
+            document.addEventListener('click', trackUserActivity);
+            document.addEventListener('keydown', trackUserActivity);
+            document.addEventListener('mousemove', trackUserActivity);
+
+            // Before unload (user closes tab/refreshes)
+            window.addEventListener('beforeunload', handleBeforeUnload);
+
+            console.log('👂 Session event listeners attached');
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden && authToken) {
+                console.log('👁️ Tab became hidden - checking session...');
+                // Give user 5 seconds to return before destroying session
+                setTimeout(() => {
+                    if (document.hidden && authToken) {
+                        console.log('🚨 User left tab for too long - destroying session');
+                        destroySession('tab_hidden');
+                    }
+                }, 5000);
+            }
+        }
+
+        function handleNetworkChange(event) {
+            const newStatus = event.type === 'online';
+            console.log(`📡 Network status changed: ${networkStatus} → ${newStatus}`);
+
+            if (networkStatus && !newStatus) {
+                // Network went offline
+                console.log('📴 Network disconnected - monitoring for reconnection...');
+                setTimeout(() => {
+                    if (!navigator.onLine && authToken) {
+                        console.log('🚨 Network still offline after 30s - destroying session');
+                        destroySession('network_lost');
+                    }
+                }, 30000);
+            }
+
+            networkStatus = newStatus;
+        }
+
+        function trackUserActivity(event) {
+            lastActivityTime = Date.now();
+
+            // Track click patterns for suspicious activity detection
+            if (event.type === 'click') {
+                clickCount++;
+                clickTimestamps.push(Date.now());
+
+                // Keep only last 10 clicks
+                if (clickTimestamps.length > 10) {
+                    clickTimestamps.shift();
+                }
+            }
+        }
+
+        function detectSuspiciousActivity() {
+            if (!authToken || suspiciousActivityDetected) return;
+
+            const now = Date.now();
+
+            // Check for rapid clicking (more than 20 clicks in 5 seconds)
+            const recentClicks = clickTimestamps.filter(time => now - time < 5000);
+            if (recentClicks.length > 20) {
+                console.log('🚨 Suspicious activity detected: Rapid clicking');
+                suspiciousActivityDetected = true;
+                destroySession('suspicious_activity');
+                return;
+            }
+
+            // Check for session inactivity (no activity for 2 hours)
+            if (now - lastActivityTime > 7200000) { // 2 hours
+                console.log('🚨 Session inactive for 2 hours - destroying session');
+                destroySession('session_timeout');
+                return;
+            }
+
+            // Check for unusually long session (24 hours)
+            if (now - sessionStartTime > 86400000) { // 24 hours
+                console.log('🚨 Session exceeded 24 hours - destroying session');
+                destroySession('session_expired');
+                return;
+            }
+        }
+
+        function handleBeforeUnload(event) {
+            // This will trigger when user closes tab, refreshes, or navigates away
+            if (authToken) {
+                // Send immediate logout request
+                navigator.sendBeacon('/api/auth/logout', JSON.stringify({
+                    reason: 'page_unload',
+                    timestamp: Date.now()
+                }));
+            }
+        }
+
+        async function checkSessionHealth() {
+            if (!authToken) return;
+
+            try {
+                const response = await fetch('/api/auth/session-health', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (!response.ok) {
+                    console.log('🚨 Session health check failed - destroying session');
+                    destroySession('health_check_failed');
+                }
+            } catch (error) {
+                console.warn('Session health check error:', error);
+            }
+        }
+
+        async function sendSessionHeartbeat() {
+            if (!authToken) return;
+
+            try {
+                await fetch('/api/auth/heartbeat', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        timestamp: Date.now(),
+                        userAgent: navigator.userAgent,
+                        online: navigator.onLine
+                    })
+                });
+            } catch (error) {
+                console.warn('Heartbeat send failed:', error);
+            }
+        }
+
+        async function destroySession(reason) {
+            console.log(`💥 Destroying session - Reason: ${reason}`);
+
+            // Clear monitoring
+            if (sessionMonitorInterval) {
+                clearInterval(sessionMonitorInterval);
+                sessionMonitorInterval = null;
+            }
+
+            // Send force logout request with reason
+            try {
+                await fetch('/api/auth/force-logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        reason: reason,
+                        timestamp: Date.now()
+                    })
+                });
+            } catch (error) {
+                console.warn('Force logout request failed:', error);
+            }
+
+            // Clear local session data
+            authToken = null;
+            currentUser = null;
+            localStorage.removeItem('cryptee_token');
+            suspiciousActivityDetected = false;
+
+            // Show logout message
+            const reasonMessage = reason.replace(/_/g, ' ');
+            showStatus(`Session ended for security reasons: ${reasonMessage}`, 'info');
+
+            // Redirect to login after short delay
+            setTimeout(() => {
+                navigateToPage('login');
+            }, 2000);
+        }
+
+        function stopSessionMonitoring() {
+            if (sessionMonitorInterval) {
+                clearInterval(sessionMonitorInterval);
+                sessionMonitorInterval = null;
+            }
+        }
+
+        // Global variables for encryption
+        let selectedFile = null;
+        let encryptedFileData = null;
+        let encryptionKey = null;
+
+        // File handling functions
+        function handleFileSelect() {
+            const fileInput = document.getElementById('file-input');
+            if (fileInput.files.length > 0) {
+                selectedFile = fileInput.files[0];
+                document.getElementById('file-name').textContent = selectedFile.name;
+                document.getElementById('file-size').textContent = formatFileSize(selectedFile.size);
+                document.getElementById('file-info').style.display = 'block';
+                document.getElementById('encryption-section').style.display = 'block';
+
+                // Hide upload area and file type selection
+                document.getElementById('upload-area').style.display = 'none';
+                document.querySelector('.file-type-grid').style.display = 'none';
+
+                // Setup encryption key validation
+                setupEncryptionValidation();
+            }
+        }
+
+        function setupEncryptionValidation() {
+            const keyInput = document.getElementById('encryption-key');
+            const confirmKeyInput = document.getElementById('confirm-encryption-key');
+
+            keyInput.addEventListener('input', validateEncryptionKey);
+            confirmKeyInput.addEventListener('input', validateEncryptionKey);
+        }
+
+        function validateEncryptionKey() {
+            const keyInput = document.getElementById('encryption-key');
+            const confirmKeyInput = document.getElementById('confirm-encryption-key');
+            const strengthBar = document.getElementById('key-strength');
+            const strengthFill = document.getElementById('strength-fill');
+            const strengthText = document.getElementById('strength-text');
+            const encryptBtn = document.getElementById('encrypt-btn');
+
+            const key = keyInput.value;
+            const confirmKey = confirmKeyInput.value;
+
+            // Check password strength
+            const strength = checkPasswordStrength(key);
+            updateStrengthIndicator(strength, strengthFill, strengthText, strengthBar);
+
+            // Check if keys match
+            const keysMatch = key === confirmKey && key.length >= 8;
+
+            // Enable/disable encrypt button
+            encryptBtn.disabled = !keysMatch || strength.score < 2;
+
+            // Visual feedback for confirmation field
+            if (confirmKey && key !== confirmKey) {
+                confirmKeyInput.style.borderColor = '#ef4444';
+                confirmKeyInput.nextElementSibling.textContent = 'Keys do not match';
+                confirmKeyInput.nextElementSibling.className = 'form-text error';
+            } else if (confirmKey && key === confirmKey) {
+                confirmKeyInput.style.borderColor = 'var(--accent-green)';
+                confirmKeyInput.nextElementSibling.textContent = 'Keys match ✓';
+                confirmKeyInput.nextElementSibling.className = 'form-text success';
+            } else {
+                confirmKeyInput.style.borderColor = 'var(--gray-300)';
+                confirmKeyInput.nextElementSibling.textContent = 'Re-enter the same key to confirm.';
+                confirmKeyInput.nextElementSibling.className = 'form-text';
+            }
+        }
+
+        function checkPasswordStrength(password) {
+            let score = 0;
+            const checks = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                numbers: /\d/.test(password),
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+            };
+
+            score += checks.length ? 1 : 0;
+            score += checks.uppercase ? 1 : 0;
+            score += checks.lowercase ? 1 : 0;
+            score += checks.numbers ? 1 : 0;
+            score += checks.special ? 1 : 0;
+
+            let level = 'weak';
+            if (score >= 4) level = 'strong';
+            else if (score >= 3) level = 'medium';
+
+            return { score, level, checks };
+        }
+
+        function updateStrengthIndicator(strength, fillElement, textElement, container) {
+            // Reset classes
+            fillElement.className = 'strength-fill';
+            textElement.className = 'strength-text';
+
+            if (strength.score === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            fillElement.classList.add(strength.level);
+            textElement.classList.add(strength.level);
+
+            const messages = {
+                weak: 'Weak - Add uppercase, numbers, and symbols',
+                medium: 'Medium - Add more variety for better security',
+                strong: 'Strong - Excellent encryption key!'
+            };
+
+            textElement.textContent = messages[strength.level];
+        }
+
+        async function encryptAndProceed() {
+            if (!selectedFile) {
+                showStatus('No file selected', 'error');
+                return;
+            }
+
+            const key = document.getElementById('encryption-key').value;
+            const confirmKey = document.getElementById('confirm-encryption-key').value;
+
+            if (key !== confirmKey) {
+                showStatus('Encryption keys do not match', 'error');
+                return;
+            }
+
+            if (key.length < 8) {
+                showStatus('Encryption key must be at least 8 characters', 'error');
+                return;
+            }
+
+            const encryptBtn = document.getElementById('encrypt-btn');
+            const originalText = encryptBtn.innerHTML;
+            encryptBtn.disabled = true;
+            encryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Encrypting...';
+
+            const statusDiv = document.getElementById('encryption-status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Encrypting your file... This may take a moment for large files.';
+            statusDiv.style.display = 'block';
+
+            try {
+                // Encrypt the file
+                const encryptedData = await encryptFile(selectedFile, key);
+                encryptedFileData = encryptedData;
+                encryptionKey = key;
+
+                statusDiv.className = 'status success';
+                statusDiv.textContent = 'File encrypted successfully! You can now share it securely.';
+
+                // Show the encryption key and send form
+                document.getElementById('display-encryption-key').value = key;
+
+                // Show the send form
+                setTimeout(() => {
+                    document.getElementById('encryption-section').style.display = 'none';
+                    document.getElementById('send-form').style.display = 'block';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Encryption failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Encryption failed. Please try again.';
+                encryptBtn.disabled = false;
+                encryptBtn.innerHTML = originalText;
+            }
+        }
+
+        function cancelEncryption() {
+            // Reset everything and go back to file selection
+            selectedFile = null;
+            encryptedFileData = null;
+            encryptionKey = null;
+
+            document.getElementById('file-input').value = '';
+            document.getElementById('encryption-section').style.display = 'none';
+            document.getElementById('file-info').style.display = 'none';
+            document.getElementById('upload-area').style.display = 'block';
+            document.querySelector('.file-type-grid').style.display = 'block';
+
+            // Reset encryption form
+            document.getElementById('encryption-key').value = '';
+            document.getElementById('confirm-encryption-key').value = '';
+            document.getElementById('key-strength').style.display = 'none';
+            document.getElementById('encryption-status').style.display = 'none';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function sendFile() {
+            if (!authToken) {
+                showStatus('Please login first', 'error');
+                return;
+            }
+
+            if (!encryptedFileData || !encryptionKey) {
+                showStatus('Please encrypt your file first', 'error');
+                return;
+            }
+
+            const recipientEmail = document.getElementById('recipient-email').value;
+            const message = document.getElementById('send-message').value;
+            const password = document.getElementById('share-password').value;
+
+            if (!recipientEmail) {
+                showStatus('Please enter recipient email', 'error');
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', encryptedFileData.blob);
+                formData.append('filename', encryptedFileData.originalName);
+                formData.append('original_size', selectedFile.size);
+                formData.append('encrypted_size', encryptedFileData.encryptedSize);
+                formData.append('recipient_email', recipientEmail);
+                formData.append('message', message);
+                formData.append('encryption_key', encryptionKey); // Store encryption key for recipient
+                if (password) {
+                    formData.append('share_password', password);
+                }
+
+                const response = await fetch('/api/files/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus('File encrypted and shared successfully! Share the encryption key with your recipient.', 'success');
+
+                    // Reset everything after successful send
+                    setTimeout(() => {
+                        resetSendForm();
+                    }, 3000);
+                } else {
+                    showStatus(data.error || 'Upload failed', 'error');
+                }
+            } catch (error) {
+                showStatus('Send error: ' + error.message, 'error');
+            }
+        }
+
+        function copyEncryptionKey() {
+            const keyInput = document.getElementById('display-encryption-key');
+            keyInput.select();
+            document.execCommand('copy');
+
+            // Visual feedback
+            const copyBtn = event.target.closest('button');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyBtn.classList.add('btn-success');
+            copyBtn.classList.remove('btn-outline');
+
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.classList.remove('btn-success');
+                copyBtn.classList.add('btn-outline');
+            }, 2000);
+        }
+
+        function resetSendForm() {
+            // Reset all form data
+            selectedFile = null;
+            encryptedFileData = null;
+            encryptionKey = null;
+
+            document.getElementById('file-input').value = '';
+            document.getElementById('recipient-email').value = '';
+            document.getElementById('send-message').value = '';
+            document.getElementById('share-password').value = '';
+
+            // Hide all sections
+            document.getElementById('file-info').style.display = 'none';
+            document.getElementById('encryption-section').style.display = 'none';
+            document.getElementById('send-form').style.display = 'none';
+
+            // Show initial sections
+            document.getElementById('upload-area').style.display = 'block';
+            document.querySelector('.file-type-grid').style.display = 'block';
+
+            // Reset encryption form
+            document.getElementById('encryption-key').value = '';
+            document.getElementById('confirm-encryption-key').value = '';
+            document.getElementById('key-strength').style.display = 'none';
+            document.getElementById('encryption-status').style.display = 'none';
+        }
+
+        async function encryptFile(file, userKey) {
+            try {
+                // Convert user key to crypto key
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    new TextEncoder().encode(userKey),
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                // Derive encryption key using PBKDF2
+                const salt = crypto.getRandomValues(new Uint8Array(16));
+                const encryptionKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt']
+                );
+
+                // Read file data
+                const arrayBuffer = await file.arrayBuffer();
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+
+                // Encrypt the file
+                const encrypted = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    encryptionKey,
+                    arrayBuffer
+                );
+
+                // Combine salt + iv + encrypted data
+                const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+                combined.set(salt, 0);
+                combined.set(iv, salt.length);
+                combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+                return {
+                    blob: new Blob([combined]),
+                    originalName: file.name,
+                    size: file.size,
+                    encryptedSize: combined.length,
+                    key: userKey // Store the user key for sharing
+                };
+            } catch (error) {
+                console.error('Encryption error:', error);
+                throw new Error('Failed to encrypt file: ' + error.message);
+            }
+        }
+
+        async function handleReceivedFile() {
+            const fileInput = document.getElementById('receive-file-input');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                showStatus('File uploaded. Ready for decryption.', 'info');
+
+                // Show decryption section
+                showDecryptionSection(file);
+            }
+        }
+
+        function showDecryptionSection(file) {
+            // Create or show decryption UI
+            let decryptSection = document.getElementById('decryption-section');
+            if (!decryptSection) {
+                decryptSection = document.createElement('div');
+                decryptSection.id = 'decryption-section';
+                decryptSection.className = 'card';
+                decryptSection.style.marginTop = '2rem';
+                decryptSection.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔓</span>
+                            Decrypt File
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="status info" style="margin-bottom: 1.5rem;">
+                            <strong>🔑 Enter the encryption key</strong> provided by the sender to access this file.
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Encryption Key</label>
+                            <input type="password" class="form-control" id="decryption-key" placeholder="Enter the encryption key" required>
+                            <div class="form-text">This key was provided separately by the file sender.</div>
+                        </div>
+                        <div class="decryption-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                            <button type="button" class="btn btn-success" onclick="decryptFile()" id="decrypt-btn">
+                                <i class="fas fa-lock-open"></i> Decrypt & Download
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelDecryption()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                        <div id="decryption-status" style="margin-top: 1rem; display: none;"></div>
+                    </div>
+                `;
+                document.getElementById('receive').appendChild(decryptSection);
+            }
+
+            decryptSection.style.display = 'block';
+            document.getElementById('decryption-key').focus();
+        }
+
+        async function decryptFile() {
+            const decryptionKey = document.getElementById('decryption-key').value;
+            if (!decryptionKey) {
+                showStatus('Please enter the encryption key', 'error');
+                return;
+            }
+
+            const decryptBtn = document.getElementById('decrypt-btn');
+            const originalText = decryptBtn.innerHTML;
+            decryptBtn.disabled = true;
+            decryptBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Decrypting...';
+
+            const statusDiv = document.getElementById('decryption-status');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Decrypting your file...';
+            statusDiv.style.display = 'block';
+
+            try {
+                const fileInput = document.getElementById('receive-file-input');
+                const file = fileInput.files[0];
+
+                const decryptedBlob = await decryptFile(file, decryptionKey);
+
+                // Create download link
+                const url = URL.createObjectURL(decryptedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name.replace('.encrypted', ''); // Remove .encrypted extension if present
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                statusDiv.className = 'status success';
+                statusDiv.textContent = 'File decrypted and downloaded successfully!';
+
+                // Reset form after success
+                setTimeout(() => {
+                    cancelDecryption();
+                    fileInput.value = '';
+                }, 3000);
+
+            } catch (error) {
+                console.error('Decryption failed:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Decryption failed. Please check your encryption key and try again.';
+                decryptBtn.disabled = false;
+                decryptBtn.innerHTML = originalText;
+            }
+        }
+
+        async function decryptFile(encryptedFile, userKey) {
+            try {
+                const arrayBuffer = await encryptedFile.arrayBuffer();
+                const data = new Uint8Array(arrayBuffer);
+
+                // Extract salt (first 16 bytes), iv (next 12 bytes), and encrypted data
+                const salt = data.slice(0, 16);
+                const iv = data.slice(16, 28);
+                const encrypted = data.slice(28);
+
+                // Derive key using same parameters as encryption
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    new TextEncoder().encode(userKey),
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits', 'deriveKey']
+                );
+
+                const decryptionKey = await crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['decrypt']
+                );
+
+                // Decrypt the data
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    decryptionKey,
+                    encrypted
+                );
+
+                return new Blob([decrypted]);
+            } catch (error) {
+                console.error('Decryption error:', error);
+                throw new Error('Failed to decrypt file. Please check your encryption key.');
+            }
+        }
+
+        function cancelDecryption() {
+            const decryptSection = document.getElementById('decryption-section');
+            if (decryptSection) {
+                decryptSection.style.display = 'none';
+            }
+            document.getElementById('decryption-key').value = '';
+            document.getElementById('decryption-status').style.display = 'none';
+            document.getElementById('receive-file-input').value = '';
+        }
+
+        // File type selection
+        let selectedFileType = 'other';
+
+        function selectFileType(type) {
+            selectedFileType = type;
+
+            // Update UI
+            document.querySelectorAll('.file-type-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.getElementById(type + '-option').classList.add('active');
+
+            // Update upload area based on file type
+            const uploadIcon = document.getElementById('upload-icon');
+            const uploadText = document.getElementById('upload-text');
+            const uploadHint = document.getElementById('upload-hint');
+
+            const typeConfig = {
+                document: { icon: '📄', text: 'Select documents to send', hint: 'PDF, Word, Excel, PowerPoint up to 100MB' },
+                video: { icon: '🎥', text: 'Select videos to send', hint: 'MP4, AVI, MOV, MKV up to 100MB' },
+                audio: { icon: '🎵', text: 'Select audio files to send', hint: 'MP3, WAV, FLAC, AAC up to 100MB' },
+                picture: { icon: '🖼️', text: 'Select pictures to send', hint: 'JPG, PNG, GIF, WebP up to 100MB' },
+                other: { icon: '📁', text: 'Select files to send', hint: 'Any file type up to 100MB' }
+            };
+
+            const config = typeConfig[type];
+            uploadIcon.textContent = config.icon;
+            uploadText.textContent = config.text;
+            uploadHint.textContent = config.hint;
+        }
+
+        // Load received files
+        async function loadReceivedFiles() {
+            if (!authToken) return;
+
+            try {
+                const response = await fetch('/api/files/received', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const files = await response.json();
+                    displayReceivedFiles(files);
+                }
+            } catch (error) {
+                console.warn('Failed to load received files:', error);
+            }
+        }
+
+        function displayReceivedFiles(files) {
+            const container = document.getElementById('received-files-list');
+
+            if (!files || files.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">No files received yet</div>
+                        <div class="empty-desc">Files you receive will appear here with timestamps</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const filesHtml = files.map(file => {
+                const receivedDate = new Date(file.received_at);
+                const formattedDate = receivedDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const fileIcon = getFileIcon(file.filename);
+                const fileSize = formatFileSize(file.size);
+
+                return `
+                    <div class="received-file-item">
+                        <div class="file-info">
+                            <div class="file-icon">${fileIcon}</div>
+                            <div class="file-details">
+                                <div class="file-name">${file.filename}</div>
+                                <div class="file-meta">${fileSize} • From: ${file.sender_email}</div>
+                            </div>
+                        </div>
+                        <div class="file-timestamp">${formattedDate}</div>
+                        <div class="file-actions">
+                            <button class="file-action-btn primary" onclick="downloadReceivedFile('${file.id}')">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = filesHtml;
+        }
+
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const iconMap = {
+                // Documents
+                'pdf': '📄', 'doc': '📄', 'docx': '📄', 'txt': '📄', 'rtf': '📄',
+                // Spreadsheets
+                'xls': '📊', 'xlsx': '📊', 'csv': '📊',
+                // Presentations
+                'ppt': '📽️', 'pptx': '📽️',
+                // Images
+                'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'webp': '🖼️', 'bmp': '🖼️',
+                // Videos
+                'mp4': '🎥', 'avi': '🎥', 'mov': '🎥', 'mkv': '🎥', 'wmv': '🎥',
+                // Audio
+                'mp3': '🎵', 'wav': '🎵', 'flac': '🎵', 'aac': '🎵', 'ogg': '🎵',
+                // Archives
+                'zip': '📦', 'rar': '📦', '7z': '📦', 'tar': '📦', 'gz': '📦'
+            };
+            return iconMap[ext] || '📄';
+        }
+
+        async function downloadReceivedFile(fileId) {
+            if (!authToken) {
+                showStatus('Please login first', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/files/received/${fileId}/download`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'decrypted_file'; // The backend should provide proper filename
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    showStatus('File downloaded successfully!', 'success');
+                } else {
+                    showStatus('Failed to download file', 'error');
+                }
+            } catch (error) {
+                showStatus('Download error: ' + error.message, 'error');
+            }
+        }
+
+        // History functions
+        let currentHistoryFilter = 'all';
+
+        async function loadFileHistory() {
+            if (!authToken) return;
+
+            try {
+                const response = await fetch('/api/files/history', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const history = await response.json();
+                    displayFileHistory(history);
+                }
+            } catch (error) {
+                console.warn('Failed to load file history:', error);
+            }
+        }
+
+        function switchHistoryTab(filter) {
+            currentHistoryFilter = filter;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('tab-' + filter).classList.add('active');
+
+            // Reload history with new filter
+            loadFileHistory();
+        }
+
+        function displayFileHistory(history) {
+            const container = document.getElementById('history-list');
+
+            if (!history || history.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📚</div>
+                        <div class="empty-text">No file history yet</div>
+                        <div class="empty-desc">Your sent and received files will appear here</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Filter history based on current tab
+            let filteredHistory = history;
+            if (currentHistoryFilter === 'sent') {
+                filteredHistory = history.filter(item => item.type === 'sent');
+            } else if (currentHistoryFilter === 'received') {
+                filteredHistory = history.filter(item => item.type === 'received');
+            }
+
+            // Sort by timestamp (newest first)
+            filteredHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            const historyHtml = filteredHistory.map(item => {
+                const timestamp = new Date(item.timestamp);
+                const formattedDate = timestamp.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const fileIcon = getFileIcon(item.filename);
+                const fileSize = formatFileSize(item.size);
+                const itemClass = item.type === 'sent' ? 'sent' : 'received';
+                const typeLabel = item.type === 'sent' ? 'Sent to' : 'Received from';
+                const contactInfo = item.type === 'sent' ? item.recipient_email : item.sender_email;
+
+                return `
+                    <div class="history-item ${itemClass}">
+                        <div class="history-info">
+                            <div class="history-icon">${fileIcon}</div>
+                            <div class="history-details">
+                                <div class="history-name">${item.filename}</div>
+                                <div class="history-meta">${fileSize} • ${typeLabel} ${contactInfo}</div>
+                            </div>
+                        </div>
+                        <div class="history-timestamp">${formattedDate}</div>
+                        <div class="history-actions">
+                            <button class="history-action-btn" onclick="viewFileDetails('${item.id}', '${item.type}')">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = historyHtml;
+        }
+
+        function viewFileDetails(fileId, type) {
+            // This would open a modal with detailed file information
+            // For now, just show a status message
+            showStatus(`File ${type} details for ID: ${fileId}`, 'info');
+        }
+
+        // Help page functions
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('.accordion-arrow');
+
+            // Close all other accordions
+            document.querySelectorAll('.accordion-content').forEach(item => {
+                if (item !== content) {
+                    item.classList.remove('active');
+                    item.previousElementSibling.querySelector('.accordion-arrow').style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Toggle current accordion
+            content.classList.toggle('active');
+            arrow.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        function toggleFaq(question) {
+            const answer = question.nextElementSibling;
+            const arrow = question.querySelector('.faq-arrow');
+
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                if (item !== answer) {
+                    item.classList.remove('active');
+                    item.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Toggle current FAQ
+            answer.classList.toggle('active');
+            arrow.style.transform = answer.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+
+        // Report page functions
+        let currentRating = 0;
+
+        function setRating(rating) {
+            currentRating = rating;
+            document.getElementById('rating-value').value = rating;
+
+            // Update star display
+            document.querySelectorAll('.star').forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                    star.textContent = '★';
+                } else {
+                    star.classList.remove('active');
+                    star.textContent = '☆';
+                }
+            });
+        }
+
+        function detectBrowserInfo() {
+            // Detect browser
+            let browser = 'Unknown';
+            if (navigator.userAgent.includes('Chrome')) browser = 'Chrome';
+            else if (navigator.userAgent.includes('Firefox')) browser = 'Firefox';
+            else if (navigator.userAgent.includes('Safari')) browser = 'Safari';
+            else if (navigator.userAgent.includes('Edge')) browser = 'Edge';
+
+            // Detect OS
+            let os = 'Unknown';
+            if (navigator.userAgent.includes('Windows')) os = 'Windows';
+            else if (navigator.userAgent.includes('Mac')) os = 'macOS';
+            else if (navigator.userAgent.includes('Linux')) os = 'Linux';
+            else if (navigator.userAgent.includes('Android')) os = 'Android';
+            else if (navigator.userAgent.includes('iOS')) os = 'iOS';
+
+            // Screen info
+            const screen = `${screen.width}x${screen.height}`;
+
+            document.getElementById('browser-info').textContent = browser;
+            document.getElementById('os-info').textContent = os;
+            document.getElementById('screen-info').textContent = screen;
+        }
+
+        async function submitBugReport(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+
+            // Add browser info
+            data.browser = document.getElementById('browser-info').textContent;
+            data.os = document.getElementById('os-info').textContent;
+            data.screen = document.getElementById('screen-info').textContent;
+            data.timestamp = new Date().toISOString();
+
+            const submitBtn = document.getElementById('submit-report-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            try {
+                // In a real app, this would send to your backend
+                // For now, we'll simulate success and store locally
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+
+                // Store locally for demo
+                const reports = JSON.parse(localStorage.getItem('cryptee_reports') || '[]');
+                reports.unshift(data);
+                localStorage.setItem('cryptee_reports', JSON.stringify(reports.slice(0, 10))); // Keep last 10
+
+                showReportStatus('Thank you for your feedback! We appreciate your help in improving Cryptee.', 'success');
+                form.reset();
+                setRating(0);
+                loadRecentReports();
+
+            } catch (error) {
+                showReportStatus('Failed to submit feedback. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function showReportStatus(message, type) {
+            const statusDiv = document.getElementById('report-status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = 'block';
+
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function clearReportForm() {
+            document.getElementById('bug-report-form').reset();
+            setRating(0);
+        }
+
+        function loadRecentReports() {
+            const reports = JSON.parse(localStorage.getItem('cryptee_reports') || '[]');
+            const container = document.getElementById('reports-list');
+            const section = document.getElementById('recent-reports');
+
+            if (reports.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+
+            const reportsHtml = reports.map(report => {
+                const date = new Date(report.timestamp).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const stars = '★'.repeat(report.rating) + '☆'.repeat(5 - report.rating);
+
+                return `
+                    <div class="report-item">
+                        <div class="report-header">
+                            <span class="report-type">${report.type}</span>
+                            <span class="report-date">${date}</span>
+                        </div>
+                        <div class="report-rating">${stars}</div>
+                        <div class="report-subject">${report.subject}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = reportsHtml;
+        }
+
+        // Initialize report page
+        function initReportPage() {
+            detectBrowserInfo();
+            loadRecentReports();
+        }
+
+        // Settings functions
+        function changeLanguage(lang) {
+            localStorage.setItem('cryptee_language', lang);
+            showStatus(`Language changed to ${lang.toUpperCase()}`, 'success');
+        }
+
+        function changeTheme(theme) {
+            localStorage.setItem('cryptee_theme', theme);
+            showStatus(`Theme changed to ${theme}`, 'success');
+        }
+
+        function toggleNotifications(enabled) {
+            localStorage.setItem('cryptee_notifications', enabled);
+            showStatus(`Notifications ${enabled ? 'enabled' : 'disabled'}`, 'success');
+        }
+
+        // Modal functions
+        function showFeatureModal(featureType) {
+            const modal = document.getElementById('feature-modal');
+            const title = document.getElementById('modal-title');
+            const description = document.getElementById('modal-description');
+
+            const content = {
+                encryption: {
+                    title: '🔐 End-to-End Encryption',
+                    desc: `
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 1rem;">🔒</div>
+                            <p style="font-size: 1.1rem; color: var(--gray-700); margin-bottom: 1rem;">
+                                <strong>Your files are completely secure</strong>
+                            </p>
+                        </div>
+
+                        <p style="margin-bottom: 1rem;">Imagine sending a locked box through the mail. Only you and the recipient have the key. That's exactly how our encryption works!</p>
+
+                        <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--primary-blue);">
+                            <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-blue);">What this means for you:</h4>
+                            <ul style="margin: 0; padding-left: 1rem;">
+                                <li><strong>Bank-level security:</strong> AES-256 encryption (same as banks use)</li>
+                                <li><strong>Your browser does the work:</strong> Files encrypted before leaving your device</li>
+                                <li><strong>We can't see your files:</strong> Even we don't have access to your data</li>
+                                <li><strong>Unique for each file:</strong> Every file gets its own secret key</li>
+                            </ul>
+                        </div>
+
+                        <p style="font-style: italic; color: var(--gray-600);">
+                            Your privacy is protected from the moment you upload until the recipient downloads.
+                        </p>
+                    `
+                },
+                sharing: {
+                    title: '📤 Secure File Sharing',
+                    desc: `
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div style="font-size: 3rem; color: var(--accent-green); margin-bottom: 1rem;">📤</div>
+                            <p style="font-size: 1.1rem; color: var(--gray-700); margin-bottom: 1rem;">
+                                <strong>Share with confidence</strong>
+                            </p>
+                        </div>
+
+                        <p style="margin-bottom: 1rem;">Sharing files securely shouldn't be complicated. We've made it as simple as sending an email, but with bank-level security.</p>
+
+                        <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent-green);">
+                            <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-green);">Sharing made easy:</h4>
+                            <ul style="margin: 0; padding-left: 1rem;">
+                                <li><strong>Password protection:</strong> Add an extra lock with your own password</li>
+                                <li><strong>Self-destructing links:</strong> Files automatically disappear after expiration</li>
+                                <li><strong>Download control:</strong> Limit how many times files can be accessed</li>
+                                <li><strong>Activity tracking:</strong> Know when and who accesses your files</li>
+                            </ul>
+                        </div>
+
+                        <p style="font-style: italic; color: var(--gray-600);">
+                            Share large files, documents, photos, or any type of file with complete peace of mind.
+                        </p>
+                    `
+                },
+                performance: {
+                    title: '🚀 Fast & Reliable',
+                    desc: `
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 1rem;">⚡</div>
+                            <p style="font-size: 1.1rem; color: var(--gray-700); margin-bottom: 1rem;">
+                                <strong>Lightning-fast file handling</strong>
+                            </p>
+                        </div>
+
+                        <p style="margin-bottom: 1rem;">Modern technology means you don't have to wait. Upload gigabytes of data in seconds, not hours.</p>
+
+                        <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #f59e0b;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #d97706;">Speed you can count on:</h4>
+                            <ul style="margin: 0; padding-left: 1rem;">
+                                <li><strong>Smart processing:</strong> Files encrypted in your browser, not uploaded first</li>
+                                <li><strong>Chunked transfers:</strong> Large files split into fast, manageable pieces</li>
+                                <li><strong>Real-time progress:</strong> See exactly how much is left to upload/download</li>
+                                <li><strong>Background magic:</strong> Works smoothly without freezing your browser</li>
+                            </ul>
+                        </div>
+
+                        <p style="font-style: italic; color: var(--gray-600);">
+                            Built with cutting-edge web technology for the fastest, most reliable file sharing experience.
+                        </p>
+                    `
+                },
+                privacy: {
+                    title: '🛡️ Privacy First',
+                    desc: `
+                        <div style="text-align: center; margin-bottom: 1.5rem;">
+                            <div style="font-size: 3rem; color: var(--accent-green); margin-bottom: 1rem;">🔒</div>
+                            <p style="font-size: 1.1rem; color: var(--gray-700); margin-bottom: 1rem;">
+                                <strong>Your data, your rules</strong>
+                            </p>
+                        </div>
+
+                        <p style="margin-bottom: 1rem;">We believe privacy isn't just a feature—it's a fundamental right. That's why we've built Cryptee with privacy at its core.</p>
+
+                        <div style="background: #f3e8ff; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #8b5cf6;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #7c3aed;">Privacy you can trust:</h4>
+                            <ul style="margin: 0; padding-left: 1rem;">
+                                <li><strong>Zero-knowledge design:</strong> We never see your files or passwords</li>
+                                <li><strong>No hidden tracking:</strong> No cookies, pixels, or data collection</li>
+                                <li><strong>Minimal data:</strong> We only store what you absolutely need for the service</li>
+                                <li><strong>Your rights protected:</strong> GDPR compliant with full data control</li>
+                            </ul>
+                        </div>
+
+                        <p style="font-style: italic; color: var(--gray-600);">
+                            You own your data. You control who sees it. You decide how long it lives. That's real privacy.
+                        </p>
+                    `
+                }
+            };
+
+            const feature = content[featureType];
+            if (feature) {
+                title.textContent = feature.title;
+                description.innerHTML = feature.desc;
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeFeatureModal() {
+            const modal = document.getElementById('feature-modal');
+            modal.style.display = 'none';
+        }
+
+        // Utility functions
+        function showStatus(message, type = 'info', elementId = 'status') {
+            const statusEl = document.getElementById(elementId);
+            if (statusEl) {
+                statusEl.textContent = message;
+                statusEl.className = `status ${type}`;
+                statusEl.style.display = 'block';
+                setTimeout(() => statusEl.style.display = 'none', 5000);
+            }
+        }
+
+        // Handle browser back/forward navigation
+        window.addEventListener('popstate', function(event) {
+            const path = window.location.pathname;
+            let pageName = 'home';
+
+            if (path === '/about') {
+                pageName = 'about';
+            } else if (path === '/settings') {
+                pageName = 'settings';
+            } else if (path === '/help') {
+                pageName = 'help';
+            } else if (path === '/report') {
+                pageName = 'report';
+            } else if (path === '/send') {
+                pageName = 'send';
+            } else if (path === '/receive') {
+                pageName = 'receive';
+            } else if (path === '/history') {
+                pageName = 'history';
+            } else if (path === '/login') {
+                pageName = 'login';
+            } else if (path === '/register') {
+                pageName = 'register';
+            }
+
+            showPage(pageName);
+            updateNavButtons();
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('feature-modal');
+            if (e.target === modal) {
+                closeFeatureModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFeatureModal();
+            }
+        });
+    </script>
+</body>
+</html>

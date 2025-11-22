@@ -1,0 +1,372 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "settings": "Paramètres",
+    "help": "Aide",
+    "report": "Signaler un bug",
+    "crychat": "CryChat",
+    "send": "Envoyer",
+    "receive": "Recevoir",
+    "history": "Historique",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion"
+  },
+  "header": {
+    "title": "Cryptee",
+    "subtitle": "Sécurisé • Chiffré • Partage de fichiers privé"
+  },
+  "home": {
+    "hero_title": "Bienvenue sur Cryptee",
+    "hero_subtitle": "Vos fichiers, votre contrôle. Partage chiffré de bout en bout qui protège votre vie privée avec une sécurité de niveau militaire.",
+    "start_sending": "Commencer à envoyer",
+    "learn_more": "En savoir plus",
+    "features": {
+      "encryption": {
+        "title": "Chiffrement de bout en bout",
+        "description": "Vos fichiers sont chiffrés dans votre navigateur avant le téléchargement. Seuls vous et les destinataires autorisés peuvent y accéder."
+      },
+      "sharing": {
+        "title": "Partage sécurisé",
+        "description": "Partagez des fichiers avec des liens protégés par mot de passe qui expirent automatiquement pour une sécurité maximale."
+      },
+      "performance": {
+        "title": "Rapide et fiable",
+        "description": "Construit avec des technologies web modernes pour des téléchargements, téléchargements et collaborations rapides en temps réel."
+      },
+      "privacy": {
+        "title": "Confidentialité d'abord",
+        "description": "Vos données ne quittent jamais votre contrôle. L'architecture zéro connaissance garantit votre confidentialité."
+      },
+      "multiformat": {
+        "title": "Support multi-formats",
+        "description": "Téléchargez n'importe quel type de fichier - documents, vidéos, audio, images, et plus jusqu'à 100 Mo en toute sécurité."
+      },
+      "realtime": {
+        "title": "Chiffrement en temps réel",
+        "description": "Fichiers chiffrés instantanément dans votre navigateur avec indicateurs de progression et partage instantané."
+      },
+      "crypvault": {
+        "title": "CrypVault Hors Ligne",
+        "description": "Stockez et chiffrez des fichiers hors ligne. Accédez à votre coffre-fort sécurisé partout, même sans internet."
+      }
+    }
+  },
+  "about": {
+    "title": "À propos de Cryptee",
+    "creator_title": "À propos du créateur",
+    "creator_desc": "Cryptee a été créé par MvogoNka Christophe Ulrich, un développeur passionné dédié à la création d'applications sécurisées et axées sur la confidentialité.",
+    "mission_title": "Notre mission",
+    "mission_desc": "Cryptee est une application web de partage de fichiers chiffrés de bout en bout qui priorise la confidentialité et la sécurité des données des utilisateurs. Les fichiers sont chiffrés côté client avant la transmission et ne peuvent être déchiffrés que par les destinataires autorisés.",
+    "features_title": "Fonctionnalités clés",
+    "features_list": {
+      "encryption": "Chiffrement de bout en bout : Chiffrement AES-256-GCM (comme les banques)",
+      "sharing": "Partage sécurisé : Liens de partage protégés par mot de passe et temporaires avec contrôles d'expiration",
+      "auth": "Authentification utilisateur : Authentification basée sur JWT avec hachage de mot de passe scrypt",
+      "management": "Gestion de fichiers : Téléchargement, organisation et gestion de fichiers chiffrés avec contrôle de version",
+      "ui": "Interface responsive : Interface moderne et adaptée aux mobiles avec navigation fluide",
+      "performance": "Haute performance : Optimisé pour 50+ utilisateurs simultanés avec pool de connexions",
+      "destruct": "Fichiers auto-destructeurs : Suppression automatique de fichiers après expiration ou limites de téléchargement",
+      "tracking": "Suivi d'activité : Historique complet des fichiers envoyés et reçus",
+      "support": "Support multi-formats : Documents, vidéos, audio, images et tout type de fichier jusqu'à 100 Mo",
+      "realtime": "Chiffrement en temps réel : Chiffrement côté client avec indicateurs de progression",
+      "protection": "Protection par mot de passe : Sécurité à double couche avec clés de chiffrement et mots de passe de partage",
+      "security": "Sécurité du compte : Surveillance des tentatives de connexion avec verrouillage automatique du compte",
+      "settings": "Gestion des paramètres : Préférences de langue, thème et notifications",
+      "help": "Aide et support : Documentation complète avec guides étape par étape",
+      "reporting": "Signalement de bugs : Système de feedback intégré avec informations sur le navigateur",
+      "limiting": "Limitation du taux : Protection contre les abus avec limites configurables",
+      "logging": "Journalisation d'audit : Suivi d'activité complet pour la sécurité et la conformité",
+      "mobile": "Navigation mobile : Barre de navigation inférieure optimisée pour les appareils mobiles",
+      "accessibility": "Accessibilité : Conforme WCAG avec navigation clavier et lecteur d'écran",
+      "standards": "Standards web modernes : Construit avec HTML5, CSS3 et JavaScript ES6+"
+    },
+    "crychat_title": "CryChat - Messagerie sécurisée",
+    "crychat_desc": "CryChat est le système de messagerie sécurisée intégré de Cryptee qui apporte la communication chiffrée à votre plateforme de partage de fichiers.",
+    "security_features": "Fonctionnalités de sécurité :",
+    "security_list": {
+      "e2e": "Chiffrement de bout en bout : Tous les messages sont chiffrés côté client avant transmission",
+      "no_phone": "Pas de numéros de téléphone : Utilisateurs identifiés par noms d'utilisateur, IDs Cryptee et adresses e-mail",
+      "self_destruct": "Messages auto-destructeurs : Les messages disparaissent automatiquement après des périodes définies",
+      "rate_limit": "Limitation du taux : Protection anti-brute force avec contrôles du taux de messages",
+      "user_search": "Recherche d'utilisateurs sécurisée : Trouvez et connectez-vous avec d'autres utilisateurs en privé"
+    },
+    "ux_features": "Expérience utilisateur :",
+    "ux_list": {
+      "themes": "Thèmes personnalisés : Choisissez parmi plusieurs thèmes de chat (Défaut, Sombre, Bleu, Vert, Violet)",
+      "realtime": "Messagerie en temps réel : Livraison instantanée des messages avec gestion des conversations",
+      "mobile": "Optimisé mobile : Design responsive qui fonctionne sur tous les appareils",
+      "expiration": "Expiration des messages : Définissez l'expiration des messages de 30 secondes à 7 jours",
+      "history": "Historique des conversations : Gardez une trace de toutes vos conversations sécurisées"
+    },
+    "crychat_note": "CryChat garantit que vos conversations privées restent privées, avec un chiffrement de niveau militaire et des fonctionnalités conviviales.",
+    "tech_title": "Pile technologique",
+    "tech_list": {
+      "backend": "Backend : Python Flask avec ORM SQLAlchemy et pool de connexions",
+      "database": "Base de données : SQLite (développement) / MySQL/PostgreSQL (production)",
+      "frontend": "Frontend : HTML5, CSS3 et JavaScript ES6+",
+      "encryption": "Chiffrement : API Web Crypto avec AES-256-GCM et PBKDF2",
+      "auth": "Authentification : Jetons JWT avec hachage de mot de passe scrypt",
+      "deployment": "Déploiement : Conteneurisation Docker avec proxy inverse Nginx"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "app_language": "Langue de l'application",
+    "theme": "Thème",
+    "app_theme": "Thème de l'application",
+    "light": "Clair",
+    "dark": "Sombre",
+    "notifications": "Notifications",
+    "file_notifications": "Notifications de fichiers reçus"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion à Cryptee",
+      "email": "Adresse e-mail",
+      "email_placeholder": "votre@email.com",
+      "email_help": "Entrez votre adresse e-mail enregistrée",
+      "password": "Mot de passe",
+      "password_placeholder": "Votre mot de passe",
+      "password_help": "Entrez votre mot de passe de compte",
+      "remember": "Se souvenir de moi pendant 30 jours",
+      "submit": "Se connecter à votre compte",
+      "forgot": "Mot de passe oublié ?",
+      "no_account_text": "Pas de compte ?",
+      "register_link_text": "S'inscrire ici"
+    },
+    "register": {
+      "title": "Créer un compte",
+      "username": "Nom d'utilisateur",
+      "username_placeholder": "Choisissez un nom d'utilisateur",
+      "username_help": "3-50 caractères, lettres et chiffres uniquement",
+      "email": "Adresse e-mail",
+      "email_placeholder": "votre@email.com",
+      "email_help": "Nous ne partagerons jamais votre e-mail",
+      "password": "Mot de passe",
+      "password_placeholder": "Au moins 6 caractères",
+      "confirm_password": "Confirmer le mot de passe",
+      "confirm_password_placeholder": "Confirmez votre mot de passe",
+      "terms": "J'accepte les <a href=\"#\" style=\"color: var(--primary-blue);\">Conditions générales</a> et la <a href=\"#\" style=\"color: var(--primary-blue);\">Politique de confidentialité</a>",
+      "submit": "Créer un compte",
+      "have_account_text": "Déjà un compte ?",
+      "login_link_text": "Se connecter ici"
+    },
+    "messages": {
+      "login_success": "Connexion réussie ! Redirection...",
+      "register_success": "Compte créé avec succès ! Veuillez vous connecter.",
+      "logout_success": "Déconnexion réussie",
+      "invalid_credentials": "E-mail ou mot de passe invalide",
+      "account_locked": "Compte temporairement verrouillé en raison de trop de tentatives échouées",
+      "email_exists": "Un compte avec cet e-mail existe déjà",
+      "username_exists": "Ce nom d'utilisateur est déjà pris",
+      "weak_password": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwords_not_match": "Les mots de passe ne correspondent pas",
+      "terms_required": "Vous devez accepter les conditions d'utilisation"
+    }
+  },
+  "crychat": {
+    "title": "CryChat - Messagerie sécurisée",
+    "search_placeholder": "Rechercher des utilisateurs par nom d'utilisateur, e-mail ou ID Cryptee...",
+    "search_button": "Rechercher",
+    "conversations": "Conversations",
+    "no_conversations": "Aucune conversation encore",
+    "no_conversations_desc": "Commencez à discuter avec quelqu'un de manière sécurisée et privée",
+    "themes": "Thèmes",
+    "welcome_title": "Bienvenue sur CryChat",
+    "welcome_desc": "Sélectionnez une conversation pour commencer à envoyer des messages de manière sécurisée",
+    "security_note": "Tous les messages sont chiffrés de bout en bout",
+    "message_placeholder": "Tapez votre message sécurisé...",
+    "message_info": "Les messages expirent selon votre sélection",
+    "send": "Envoyer",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "expires": "Expire",
+    "expired": "Message expiré",
+    "settings": "Paramètres de chat",
+    "theme_default": "Défaut",
+    "theme_dark": "Sombre",
+    "theme_blue": "Bleu",
+    "theme_green": "Vert",
+    "theme_purple": "Violet",
+    "expiration_never": "Jamais",
+    "expiration_30s": "30 secondes",
+    "expiration_5m": "5 minutes",
+    "expiration_1h": "1 heure",
+    "expiration_24h": "24 heures",
+    "expiration_7d": "7 jours"
+  },
+  "file_operations": {
+    "upload": {
+      "title": "Envoyer des fichiers chiffrés",
+      "select_type": "Sélectionner le type de fichier",
+      "document": "Documents",
+      "document_desc": "PDF, Word, Excel, PowerPoint jusqu'à 100 Mo",
+      "video": "Vidéos",
+      "video_desc": "MP4, AVI, MOV, MKV jusqu'à 100 Mo",
+      "audio": "Audio",
+      "audio_desc": "MP3, WAV, FLAC, AAC jusqu'à 100 Mo",
+      "image": "Images",
+      "image_desc": "JPG, PNG, GIF, WebP jusqu'à 100 Mo",
+      "other": "Autres fichiers",
+      "other_desc": "Tout type de fichier jusqu'à 100 Mo",
+      "drop_here": "Déposez les fichiers ici ou cliquez pour sélectionner",
+      "encrypting": "Chiffrement de vos fichiers...",
+      "uploading": "Téléchargement...",
+      "success": "Fichiers téléchargés avec succès !",
+      "share_link": "Partagez ce lien avec les destinataires :",
+      "copy_link": "Copier le lien",
+      "link_copied": "Lien copié dans le presse-papiers !",
+      "expires": "Le lien expire dans",
+      "downloads": "téléchargements restants"
+    },
+    "receive": {
+      "title": "Recevoir des fichiers",
+      "enter_code": "Entrez votre code d'accès",
+      "submit": "Accéder aux fichiers",
+      "no_files": "Aucun fichier disponible",
+      "no_files_desc": "Vérifiez votre code d'accès ou contactez l'expéditeur",
+      "download": "Télécharger",
+      "downloading": "Téléchargement...",
+      "decrypting": "Déchiffrement...",
+      "success": "Fichier téléchargé avec succès !",
+      "error": "Échec du téléchargement du fichier"
+    },
+    "history": {
+      "title": "Historique des fichiers",
+      "sent": "Fichiers envoyés",
+      "received": "Fichiers reçus",
+      "no_sent": "Aucun fichier envoyé encore",
+      "no_received": "Aucun fichier reçu encore",
+      "file_name": "Nom du fichier",
+      "size": "Taille",
+      "date": "Date",
+      "status": "Statut",
+      "actions": "Actions",
+      "download": "Télécharger",
+      "delete": "Supprimer",
+      "expired": "Expiré",
+      "active": "Actif"
+    }
+  },
+  "help": {
+    "title": "Aide et support",
+    "intro": "Commencez avec la plateforme de partage de fichiers et de messagerie sécurisée de Cryptee",
+    "getting_started": "Premiers pas",
+    "steps": {
+      "register": "Créez un compte avec votre e-mail et mot de passe",
+      "login": "Connectez-vous pour accéder à votre tableau de bord sécurisé",
+      "upload": "Téléchargez des fichiers pour les chiffrer et les partager en toute sécurité",
+      "share": "Partagez des liens chiffrés avec les destinataires prévus",
+      "receive": "Recevez des fichiers en utilisant des codes d'accès",
+      "chat": "Utilisez CryChat pour la messagerie sécurisée"
+    },
+    "features_title": "Fonctionnalités clés",
+    "features": {
+      "encryption": "Tous les fichiers sont chiffrés de bout en bout",
+      "passwords": "Ajoutez une protection supplémentaire avec des mots de passe",
+      "expiration": "Définissez des délais d'expiration automatiques",
+      "tracking": "Surveillez l'accès aux fichiers et les téléchargements",
+      "themes": "Personnalisez l'apparence de votre interface",
+      "languages": "Choisissez votre langue préférée"
+    },
+    "faq_title": "Questions fréquemment posées",
+    "faq": {
+      "security": "À quel point Cryptee est-il sécurisé ?",
+      "security_answer": "Cryptee utilise un chiffrement AES-256-GCM de niveau militaire. Les fichiers sont chiffrés dans votre navigateur avant le téléchargement, et seuls vous et les destinataires autorisés pouvez y accéder.",
+      "file_size": "Quelle est la taille maximale des fichiers ?",
+      "file_size_answer": "Vous pouvez télécharger des fichiers jusqu'à 100 Mo.",
+      "expiration": "Combien de temps les liens partagés durent-ils ?",
+      "expiration_answer": "Vous pouvez définir des délais d'expiration de quelques minutes à plusieurs mois, ou rendre les liens permanents.",
+      "browsers": "Quels navigateurs sont pris en charge ?",
+      "browsers_answer": "Cryptee fonctionne sur tous les navigateurs modernes, y compris Chrome, Firefox, Safari et Edge.",
+      "mobile": "Cryptee est-il adapté aux mobiles ?",
+      "mobile_answer": "Oui ! Cryptee est entièrement responsive et fonctionne parfaitement sur les téléphones et tablettes."
+    },
+    "support_title": "Besoin d'aide ?",
+    "support_options": {
+      "docs": "Documentation",
+      "docs_desc": "Lisez nos guides complets",
+      "community": "Communauté",
+      "community_desc": "Rejoignez les discussions avec d'autres utilisateurs",
+      "contact": "Contactez-nous",
+      "contact_desc": "Contactez notre équipe de support"
+    }
+  },
+  "report": {
+    "title": "Signaler un bug",
+    "intro": "Aidez-nous à améliorer Cryptee en signalant les bugs et problèmes",
+    "rating": "Comment évalueriez-vous votre expérience ?",
+    "rating_labels": {
+      "1": "Très mauvais",
+      "2": "Mauvais",
+      "3": "Moyen",
+      "4": "Bon",
+      "5": "Excellent"
+    },
+    "description": "Décrivez le problème",
+    "description_placeholder": "Veuillez fournir des détails sur le bug ou le problème que vous avez rencontré...",
+    "browser_info": "Informations sur le navigateur",
+    "submit": "Envoyer le rapport",
+    "success": "Merci pour votre rapport !",
+    "success_desc": "Nous avons reçu votre rapport de bug et nous allons l'examiner.",
+    "recent_reports": "Rapports récents"
+  },
+  "offline": {
+    "title": "Mode hors ligne",
+    "intro": "Chiffrez des fichiers localement lorsque vous êtes hors ligne",
+    "status_online": "En ligne - Prêt à partager des fichiers chiffrés",
+    "status_offline": "Hors ligne - Chiffrement des fichiers localement",
+    "select_type": "Sélectionner le type de fichier",
+    "drop_files": "Déposez les fichiers ici ou cliquez pour sélectionner",
+    "encrypting": "Chiffrement de votre fichier hors ligne...",
+    "success": "Fichier chiffré et stocké hors ligne avec succès !",
+    "share_online": "Partager en ligne",
+    "delete": "Supprimer",
+    "no_files": "Aucun fichier chiffré hors ligne encore",
+    "no_files_desc": "Les fichiers chiffrés apparaîtront ici pour un partage ultérieur"
+  },
+  "messages": {
+    "success": "Succès",
+    "error": "Erreur",
+    "info": "Information",
+    "warning": "Avertissement",
+    "loading": "Chargement...",
+    "processing": "Traitement...",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "copy": "Copier",
+    "paste": "Coller",
+    "upload": "Télécharger",
+    "download": "Télécharger",
+    "share": "Partager",
+    "send": "Envoyer",
+    "receive": "Recevoir",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "refresh": "Actualiser",
+    "retry": "Réessayer",
+    "skip": "Ignorer",
+    "continue": "Continuer"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "de": "Deutsch"
+  }
+}

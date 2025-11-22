@@ -1,0 +1,372 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "report": "Reportar error",
+    "crychat": "CryChat",
+    "send": "Enviar",
+    "receive": "Recibir",
+    "history": "Historial",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión"
+  },
+  "header": {
+    "title": "Cryptee",
+    "subtitle": "Seguro • Encriptado • Compartir archivos privado"
+  },
+  "home": {
+    "hero_title": "Bienvenido a Cryptee",
+    "hero_subtitle": "Tus archivos, tu control. Compartir encriptado de extremo a extremo que protege tu privacidad con seguridad de nivel militar.",
+    "start_sending": "Comenzar a enviar",
+    "learn_more": "Saber más",
+    "features": {
+      "encryption": {
+        "title": "Encriptación de extremo a extremo",
+        "description": "Tus archivos se encriptan en tu navegador antes de subirlos. Solo tú y los destinatarios autorizados pueden acceder a ellos."
+      },
+      "sharing": {
+        "title": "Compartir seguro",
+        "description": "Comparte archivos con enlaces protegidos por contraseña que expiran automáticamente para máxima seguridad."
+      },
+      "performance": {
+        "title": "Rápido y confiable",
+        "description": "Construido con tecnologías web modernas para subidas, descargas y colaboraciones rápidas en tiempo real."
+      },
+      "privacy": {
+        "title": "Privacidad primero",
+        "description": "Tus datos nunca salen de tu control. La arquitectura de conocimiento cero garantiza tu privacidad."
+      },
+      "multiformat": {
+        "title": "Soporte multi-formato",
+        "description": "Sube cualquier tipo de archivo - documentos, videos, audio, imágenes, y más hasta 100MB de forma segura."
+      },
+      "realtime": {
+        "title": "Encriptación en tiempo real",
+        "description": "Archivos encriptados instantáneamente en tu navegador con indicadores de progreso y compartir instantáneo."
+      },
+      "crypvault": {
+        "title": "CrypVault sin conexión",
+        "description": "Almacena y encripta archivos sin conexión. Accede a tu bóveda segura en cualquier lugar, incluso sin internet."
+      }
+    }
+  },
+  "about": {
+    "title": "Acerca de Cryptee",
+    "creator_title": "Acerca del creador",
+    "creator_desc": "Cryptee fue creado por MvogoNka Christophe Ulrich, un desarrollador apasionado dedicado a crear aplicaciones seguras y enfocadas en la privacidad.",
+    "mission_title": "Nuestra misión",
+    "mission_desc": "Cryptee es una aplicación web de compartir archivos encriptados de extremo a extremo que prioriza la privacidad y seguridad de datos de los usuarios. Los archivos se encriptan del lado del cliente antes de la transmisión y solo pueden ser desencriptados por destinatarios autorizados.",
+    "features_title": "Características clave",
+    "features_list": {
+      "encryption": "Encriptación de extremo a extremo: Encriptación AES-256-GCM (como los bancos)",
+      "sharing": "Compartir seguro: Enlaces de compartir protegidos por contraseña y temporales con controles de expiración",
+      "auth": "Autenticación de usuario: Autenticación basada en JWT con hash de contraseña scrypt",
+      "management": "Gestión de archivos: Subir, organizar y gestionar archivos encriptados con control de versiones",
+      "ui": "Interfaz responsiva: Interfaz moderna y amigable para móviles con navegación fluida",
+      "performance": "Alto rendimiento: Optimizado para 50+ usuarios concurrentes con pool de conexiones",
+      "destruct": "Archivos auto-destructivos: Eliminación automática de archivos después de expiración o límites de descarga",
+      "tracking": "Seguimiento de actividad: Historial completo de archivos enviados y recibidos",
+      "support": "Soporte multi-formato: Documentos, videos, audio, imágenes y cualquier tipo de archivo hasta 100MB",
+      "realtime": "Encriptación en tiempo real: Encriptación del lado del cliente con indicadores de progreso",
+      "protection": "Protección por contraseña: Seguridad de doble capa con claves de encriptación y contraseñas de compartir",
+      "security": "Seguridad de cuenta: Monitoreo de intentos de inicio de sesión con bloqueo automático de cuenta",
+      "settings": "Gestión de configuración: Preferencias de idioma, tema y notificaciones",
+      "help": "Ayuda y soporte: Documentación completa con guías paso a paso",
+      "reporting": "Reportar errores: Sistema de retroalimentación integrado con información del navegador",
+      "limiting": "Limitación de tasa: Protección contra abuso con límites configurables",
+      "logging": "Registro de auditoría: Seguimiento completo de actividad para seguridad y cumplimiento",
+      "mobile": "Navegación móvil: Barra de navegación inferior optimizada para dispositivos móviles",
+      "accessibility": "Accesibilidad: Compatible con WCAG con navegación por teclado y lector de pantalla",
+      "standards": "Estándares web modernos: Construido con HTML5, CSS3 y JavaScript ES6+"
+    },
+    "crychat_title": "CryChat - Mensajería segura",
+    "crychat_desc": "CryChat es el sistema de mensajería segura integrado de Cryptee que trae comunicación encriptada a tu plataforma de compartir archivos.",
+    "security_features": "Características de seguridad:",
+    "security_list": {
+      "e2e": "Encriptación de extremo a extremo: Todos los mensajes se encriptan del lado del cliente antes de la transmisión",
+      "no_phone": "Sin números de teléfono: Usuarios identificados por nombres de usuario, IDs de Cryptee y direcciones de correo electrónico",
+      "self_destruct": "Mensajes auto-destructivos: Los mensajes desaparecen automáticamente después de períodos definidos",
+      "rate_limit": "Limitación de tasa: Protección anti-fuerza bruta con controles de tasa de mensajes",
+      "user_search": "Búsqueda de usuarios segura: Encuentra y conéctate con otros usuarios de forma privada"
+    },
+    "ux_features": "Experiencia de usuario:",
+    "ux_list": {
+      "themes": "Temas personalizados: Elige entre múltiples temas de chat (Predeterminado, Oscuro, Azul, Verde, Púrpura)",
+      "realtime": "Mensajería en tiempo real: Entrega instantánea de mensajes con gestión de conversaciones",
+      "mobile": "Optimizado para móvil: Diseño responsivo que funciona en todos los dispositivos",
+      "expiration": "Expiración de mensajes: Establece la expiración de mensajes de 30 segundos a 7 días",
+      "history": "Historial de conversaciones: Mantén un registro de todas tus conversaciones seguras"
+    },
+    "crychat_note": "CryChat garantiza que tus conversaciones privadas permanezcan privadas, con encriptación de nivel militar y características amigables.",
+    "tech_title": "Pila tecnológica",
+    "tech_list": {
+      "backend": "Backend: Python Flask con ORM SQLAlchemy y pool de conexiones",
+      "database": "Base de datos: SQLite (desarrollo) / MySQL/PostgreSQL (producción)",
+      "frontend": "Frontend: HTML5, CSS3 y JavaScript ES6+",
+      "encryption": "Encriptación: API Web Crypto con AES-256-GCM y PBKDF2",
+      "auth": "Autenticación: Tokens JWT con hash de contraseña scrypt",
+      "deployment": "Despliegue: Contenedorización Docker con proxy inverso Nginx"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "app_language": "Idioma de la aplicación",
+    "theme": "Tema",
+    "app_theme": "Tema de la aplicación",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "notifications": "Notificaciones",
+    "file_notifications": "Notificaciones de archivos recibidos"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión en Cryptee",
+      "email": "Dirección de correo electrónico",
+      "email_placeholder": "tu@email.com",
+      "email_help": "Ingresa tu dirección de correo electrónico registrada",
+      "password": "Contraseña",
+      "password_placeholder": "Tu contraseña",
+      "password_help": "Ingresa tu contraseña de cuenta",
+      "remember": "Recordarme por 30 días",
+      "submit": "Iniciar sesión en tu cuenta",
+      "forgot": "¿Olvidaste tu contraseña?",
+      "no_account_text": "¿No tienes cuenta?",
+      "register_link_text": "Regístrate aquí"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "username": "Nombre de usuario",
+      "username_placeholder": "Elige un nombre de usuario",
+      "username_help": "3-50 caracteres, letras y números solamente",
+      "email": "Dirección de correo electrónico",
+      "email_placeholder": "tu@email.com",
+      "email_help": "Nunca compartiremos tu correo electrónico",
+      "password": "Contraseña",
+      "password_placeholder": "Al menos 6 caracteres",
+      "confirm_password": "Confirmar contraseña",
+      "confirm_password_placeholder": "Confirma tu contraseña",
+      "terms": "Acepto los <a href=\"#\" style=\"color: var(--primary-blue);\">Términos y Condiciones</a> y la <a href=\"#\" style=\"color: var(--primary-blue);\">Política de Privacidad</a>",
+      "submit": "Crear cuenta",
+      "have_account_text": "¿Ya tienes cuenta?",
+      "login_link_text": "Inicia sesión aquí"
+    },
+    "messages": {
+      "login_success": "¡Inicio de sesión exitoso! Redirigiendo...",
+      "register_success": "¡Cuenta creada exitosamente! Por favor inicia sesión.",
+      "logout_success": "Sesión cerrada exitosamente",
+      "invalid_credentials": "Correo electrónico o contraseña inválidos",
+      "account_locked": "Cuenta bloqueada temporalmente debido a demasiados intentos fallidos",
+      "email_exists": "Ya existe una cuenta con este correo electrónico",
+      "username_exists": "Este nombre de usuario ya está tomado",
+      "weak_password": "La contraseña debe tener al menos 8 caracteres",
+      "passwords_not_match": "Las contraseñas no coinciden",
+      "terms_required": "Debes aceptar los términos de servicio"
+    }
+  },
+  "crychat": {
+    "title": "CryChat - Mensajería segura",
+    "search_placeholder": "Buscar usuarios por nombre de usuario, correo electrónico o ID de Cryptee...",
+    "search_button": "Buscar",
+    "conversations": "Conversaciones",
+    "no_conversations": "Aún no hay conversaciones",
+    "no_conversations_desc": "Comienza a chatear con alguien de forma segura y privada",
+    "themes": "Temas",
+    "welcome_title": "Bienvenido a CryChat",
+    "welcome_desc": "Selecciona una conversación para comenzar a enviar mensajes de forma segura",
+    "security_note": "Todos los mensajes están encriptados de extremo a extremo",
+    "message_placeholder": "Escribe tu mensaje seguro...",
+    "message_info": "Los mensajes expiran según tu selección",
+    "send": "Enviar",
+    "online": "En línea",
+    "offline": "Fuera de línea",
+    "expires": "Expira",
+    "expired": "Mensaje expirado",
+    "settings": "Configuración de chat",
+    "theme_default": "Predeterminado",
+    "theme_dark": "Oscuro",
+    "theme_blue": "Azul",
+    "theme_green": "Verde",
+    "theme_purple": "Púrpura",
+    "expiration_never": "Nunca",
+    "expiration_30s": "30 segundos",
+    "expiration_5m": "5 minutos",
+    "expiration_1h": "1 hora",
+    "expiration_24h": "24 horas",
+    "expiration_7d": "7 días"
+  },
+  "file_operations": {
+    "upload": {
+      "title": "Enviar archivos encriptados",
+      "select_type": "Seleccionar tipo de archivo",
+      "document": "Documentos",
+      "document_desc": "PDF, Word, Excel, PowerPoint hasta 100MB",
+      "video": "Videos",
+      "video_desc": "MP4, AVI, MOV, MKV hasta 100MB",
+      "audio": "Audio",
+      "audio_desc": "MP3, WAV, FLAC, AAC hasta 100MB",
+      "image": "Imágenes",
+      "image_desc": "JPG, PNG, GIF, WebP hasta 100MB",
+      "other": "Otros archivos",
+      "other_desc": "Cualquier tipo de archivo hasta 100MB",
+      "drop_here": "Suelta archivos aquí o haz clic para seleccionar",
+      "encrypting": "Encriptando tus archivos...",
+      "uploading": "Subiendo...",
+      "success": "¡Archivos subidos exitosamente!",
+      "share_link": "Comparte este enlace con los destinatarios:",
+      "copy_link": "Copiar enlace",
+      "link_copied": "¡Enlace copiado al portapapeles!",
+      "expires": "El enlace expira en",
+      "downloads": "descargas restantes"
+    },
+    "receive": {
+      "title": "Recibir archivos",
+      "enter_code": "Ingresa tu código de acceso",
+      "submit": "Acceder a archivos",
+      "no_files": "No hay archivos disponibles",
+      "no_files_desc": "Verifica tu código de acceso o contacta al remitente",
+      "download": "Descargar",
+      "downloading": "Descargando...",
+      "decrypting": "Desencriptando...",
+      "success": "¡Archivo descargado exitosamente!",
+      "error": "Error al descargar el archivo"
+    },
+    "history": {
+      "title": "Historial de archivos",
+      "sent": "Archivos enviados",
+      "received": "Archivos recibidos",
+      "no_sent": "Aún no se han enviado archivos",
+      "no_received": "Aún no se han recibido archivos",
+      "file_name": "Nombre del archivo",
+      "size": "Tamaño",
+      "date": "Fecha",
+      "status": "Estado",
+      "actions": "Acciones",
+      "download": "Descargar",
+      "delete": "Eliminar",
+      "expired": "Expirado",
+      "active": "Activo"
+    }
+  },
+  "help": {
+    "title": "Ayuda y soporte",
+    "intro": "Comienza con la plataforma de compartir archivos y mensajería segura de Cryptee",
+    "getting_started": "Primeros pasos",
+    "steps": {
+      "register": "Crea una cuenta con tu correo electrónico y contraseña",
+      "login": "Inicia sesión para acceder a tu panel de control seguro",
+      "upload": "Sube archivos para encriptarlos y compartirlos de forma segura",
+      "share": "Comparte enlaces encriptados con los destinatarios previstos",
+      "receive": "Recibe archivos usando códigos de acceso",
+      "chat": "Usa CryChat para mensajería segura"
+    },
+    "features_title": "Características clave",
+    "features": {
+      "encryption": "Todos los archivos están encriptados de extremo a extremo",
+      "passwords": "Agrega protección adicional con contraseñas",
+      "expiration": "Establece tiempos de expiración automáticos",
+      "tracking": "Monitorea el acceso a archivos y descargas",
+      "themes": "Personaliza la apariencia de tu interfaz",
+      "languages": "Elige tu idioma preferido"
+    },
+    "faq_title": "Preguntas frecuentes",
+    "faq": {
+      "security": "¿Qué tan seguro es Cryptee?",
+      "security_answer": "Cryptee utiliza encriptación AES-256-GCM de nivel militar. Los archivos se encriptan en tu navegador antes de subirlos, y solo tú y los destinatarios autorizados pueden acceder a ellos.",
+      "file_size": "¿Cuál es el tamaño máximo de archivo?",
+      "file_size_answer": "Puedes subir archivos de hasta 100MB de tamaño.",
+      "expiration": "¿Cuánto tiempo duran los enlaces compartidos?",
+      "expiration_answer": "Puedes establecer tiempos de expiración desde minutos hasta meses, o hacer que los enlaces sean permanentes.",
+      "browsers": "¿Qué navegadores son compatibles?",
+      "browsers_answer": "Cryptee funciona en todos los navegadores modernos, incluyendo Chrome, Firefox, Safari y Edge.",
+      "mobile": "¿Es Cryptee compatible con móviles?",
+      "mobile_answer": "¡Sí! Cryptee es completamente responsivo y funciona genial en teléfonos y tabletas."
+    },
+    "support_title": "¿Necesitas ayuda?",
+    "support_options": {
+      "docs": "Documentación",
+      "docs_desc": "Lee nuestras guías completas",
+      "community": "Comunidad",
+      "community_desc": "Únete a las discusiones con otros usuarios",
+      "contact": "Contáctanos",
+      "contact_desc": "Comunícate con nuestro equipo de soporte"
+    }
+  },
+  "report": {
+    "title": "Reportar error",
+    "intro": "Ayúdanos a mejorar Cryptee reportando errores y problemas",
+    "rating": "¿Cómo calificarías tu experiencia?",
+    "rating_labels": {
+      "1": "Muy malo",
+      "2": "Malo",
+      "3": "Regular",
+      "4": "Bueno",
+      "5": "Excelente"
+    },
+    "description": "Describe el problema",
+    "description_placeholder": "Por favor proporciona detalles sobre el error o problema que encontraste...",
+    "browser_info": "Información del navegador",
+    "submit": "Enviar reporte",
+    "success": "¡Gracias por tu reporte!",
+    "success_desc": "Hemos recibido tu reporte de error y lo investigaremos.",
+    "recent_reports": "Reportes recientes"
+  },
+  "offline": {
+    "title": "Modo sin conexión",
+    "intro": "Encripta archivos localmente cuando estás sin conexión",
+    "status_online": "En línea - Listo para compartir archivos encriptados",
+    "status_offline": "Sin conexión - Encriptando archivos localmente",
+    "select_type": "Seleccionar tipo de archivo",
+    "drop_files": "Suelta archivos aquí o haz clic para seleccionar",
+    "encrypting": "Encriptando tu archivo sin conexión...",
+    "success": "¡Archivo encriptado y almacenado sin conexión exitosamente!",
+    "share_online": "Compartir en línea",
+    "delete": "Eliminar",
+    "no_files": "Aún no hay archivos encriptados sin conexión",
+    "no_files_desc": "Los archivos encriptados aparecerán aquí para compartirlos más tarde"
+  },
+  "messages": {
+    "success": "Éxito",
+    "error": "Error",
+    "info": "Información",
+    "warning": "Advertencia",
+    "loading": "Cargando...",
+    "processing": "Procesando...",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "ok": "OK",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "copy": "Copiar",
+    "paste": "Pegar",
+    "upload": "Subir",
+    "download": "Descargar",
+    "share": "Compartir",
+    "send": "Enviar",
+    "receive": "Recibir",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "refresh": "Actualizar",
+    "retry": "Reintentar",
+    "skip": "Omitir",
+    "continue": "Continuar"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "de": "Deutsch"
+  }
+}
