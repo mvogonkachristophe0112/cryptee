@@ -19,6 +19,7 @@ import Copyright from './components/common/Copyright';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import Chat from './components/chat/Chat';
 import OfflineEncryption from './components/offline/OfflineEncryption';
+import Home from './components/home/Home';
 
 // Context
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -63,6 +64,10 @@ function AppContent() {
       <main className="main-content">
         <Routes>
           {/* Public routes */}
+          <Route
+            path="/home"
+            element={<Home />}
+          />
           <Route
             path="/login"
             element={user ? <Navigate to="/dashboard" replace /> : <Login />}
@@ -121,7 +126,7 @@ function AppContent() {
           {/* Default redirect */}
           <Route
             path="/"
-            element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
+            element={<Navigate to={user ? "/dashboard" : "/home"} replace />}
           />
 
           {/* 404 - redirect to dashboard or login */}
