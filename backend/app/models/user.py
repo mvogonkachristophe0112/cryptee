@@ -30,6 +30,10 @@ class User(db.Model):
     password_reset_token = db.Column(db.String(128), unique=True, index=True)  # Index for token lookups
     password_reset_expires = db.Column(db.DateTime, index=True)  # Index for expiration queries
 
+    # CrypChat specific fields
+    cryptee_id = db.Column(db.String(16), unique=True, index=True)  # Unique Cryptee ID (16 char hash)
+    public_key = db.Column(db.Text)  # Public key for end-to-end encryption
+
     # Relationships
     files = db.relationship('File', backref='owner', lazy='dynamic', cascade='all, delete-orphan')
     shares_created = db.relationship('Share', backref='creator', lazy='dynamic',
@@ -44,6 +48,30 @@ class User(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.role = role
+
+        # Generate unique Cryptee ID (16 character hash based on email and timestamp)
+        import hashlib
+        import time
+        cryptee_seed = f"{email.lower().strip()}_{int(time.time() * 1000000)}"
+        self.cryptee_id = hashlib.sha256(cryptee_seed.encode()).hexdigest()[:16]
+
+        # Generate public/private key pair for end-to-end encryption
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        from cryptography.hazmat.primitives import serialization
+
+        # Generate RSA key pair
+        private_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=2048
+        )
+
+        # Extract public key
+        public_key = private_key.public_key()
+        public_pem = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+        self.public_key = public_pem.decode('utf-8')
 
         if password:
             self.set_password(password)
@@ -134,6 +162,8 @@ class User(db.Model):
             'last_name': self.last_name,
             'full_name': self.get_full_name(),
             'profile_picture': self.profile_picture,
+            'cryptee_id': self.cryptee_id,
+            'public_key': self.public_key,
             'is_active': self.is_active,
             'is_email_verified': self.is_email_verified,
             'role': self.role,

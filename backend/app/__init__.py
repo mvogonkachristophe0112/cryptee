@@ -217,32 +217,51 @@ def create_app(config_name=None):
         status_code = 200 if health_status['status'] == 'healthy' else 503
         return health_status, status_code
 
-    # Root endpoint to serve frontend
-    @app.route('/')
-    def index():
-        # Redirect to React development server for development
-        if app.config.get('DEBUG', False):
-            return redirect('http://localhost:3000')
-        return serve_page_content('home')
-
-    # About page endpoint
-    @app.route('/about')
-    def about():
-        # Redirect to React development server for development
-        if app.config.get('DEBUG', False):
-            return redirect('http://localhost:3000/about')
-        return serve_page_content('about')
-
-    # Catch-all route for SPA routing
+    # Proxy requests to React dev server for development
+    @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
-    def catch_all(path):
-        # For SPA routes, redirect to React dev server in development
-        if app.config.get('DEBUG', False) and not path.startswith('api/') and not path.startswith('static/'):
-            return redirect(f'http://localhost:3000/{path}')
-        # For SPA routes, serve the main HTML and let JavaScript handle routing
-        if not path.startswith('api/') and not path.startswith('static/'):
-            return serve_page_content('home')  # Default to home for unknown routes
-        return {'error': 'Not found'}, 404
+    def proxy_to_react(path):
+        import requests
+
+        # For API routes, let Flask handle them
+        if path.startswith('api/') or path.startswith('health'):
+            # This will be handled by other routes
+            if not path.startswith('api/') and not path.startswith('health'):
+                return serve_page_content('home')
+            return {'error': 'Not found'}, 404
+
+        # For all other routes in development, proxy to React dev server
+        if app.config.get('DEBUG', False):
+            try:
+                # Proxy the request to React dev server
+                react_url = f'http://localhost:3000/{path}'
+                if request.query_string:
+                    react_url += f'?{request.query_string.decode()}'
+
+                resp = requests.request(
+                    method=request.method,
+                    url=react_url,
+                    headers={key: value for (key, value) in request.headers if key != 'Host'},
+                    data=request.get_data(),
+                    cookies=request.cookies,
+                    allow_redirects=False
+                )
+
+                # Create response with proxied content
+                response = app.response_class(
+                    resp.content,
+                    status=resp.status_code,
+                    headers=dict(resp.headers)
+                )
+                return response
+            except requests.exceptions.RequestException:
+                # If React server is not available, serve fallback
+                return serve_page_content('home')
+        else:
+            # Production mode - serve static content
+            if not path or path == '':
+                return serve_page_content('home')
+            return serve_page_content('home')
 
     def serve_page_content(page_name):
         # Read the base HTML

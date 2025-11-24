@@ -44,9 +44,9 @@ const Navbar = () => {
                   <i className="fas fa-cloud-upload-alt me-1"></i>
                   {t('nav.upload', 'Upload')}
                 </Nav.Link>
-                <Nav.Link as={Link} to="/chat">
+                <Nav.Link as={Link} to="/crypchat" className="crypchat-link">
                   <i className="fas fa-comments me-1"></i>
-                  {t('nav.chat', 'Chat')}
+                  <strong>CrypChat</strong>
                 </Nav.Link>
                 <Nav.Link as={Link} to="/settings">
                   <i className="fas fa-cog me-1"></i>

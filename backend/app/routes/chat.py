@@ -14,6 +14,31 @@ from ..models import User, ChatConversation, ChatMessage, ChatTheme, ChatSetting
 chat_bp = Blueprint('chat', __name__)
 
 
+@chat_bp.route('/profile', methods=['GET'])
+@jwt_required()
+@limiter.limit("50 per minute")
+def get_chat_profile():
+    """Get current user's chat profile information."""
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        return jsonify({
+            'username': user.username,
+            'cryptee_id': user.cryptee_id,
+            'public_key': user.public_key,
+            'full_name': user.get_full_name(),
+            'email': user.email
+        })
+
+    except Exception as e:
+        current_app.logger.error(f'Error getting chat profile: {e}')
+        return jsonify({'error': 'Failed to get chat profile'}), 500
+
+
 @chat_bp.route('/conversations', methods=['GET'])
 @jwt_required()
 @limiter.limit("100 per minute")
@@ -125,14 +150,9 @@ def create_conversation():
         if not recipient:
             recipient = User.query.filter_by(email=recipient_identifier).first()
 
-        # Try cryptee ID (assuming it's a hash of user ID)
+        # Try cryptee ID
         if not recipient:
-            # Generate possible cryptee IDs and check
-            for user in User.query.all():
-                cryptee_id = hashlib.sha256(f"cryptee_{user.id}".encode()).hexdigest()[:16]
-                if cryptee_id == recipient_identifier:
-                    recipient = user
-                    break
+            recipient = User.query.filter_by(cryptee_id=recipient_identifier).first()
 
         if not recipient:
             return jsonify({'error': 'Recipient not found'}), 404
@@ -452,12 +472,13 @@ def search_users():
         if not query or len(query) < 2:
             return jsonify({'users': [], 'total': 0})
 
-        # Search by username or email (partial matches)
+        # Search by username, email, or cryptee ID (partial matches)
         users = User.query.filter(
             User.id != user_id,  # Exclude current user
             or_(
                 User.username.ilike(f'%{query}%'),
-                User.email.ilike(f'%{query}%')
+                User.email.ilike(f'%{query}%'),
+                User.cryptee_id.ilike(f'%{query}%')
             )
         ).limit(20).all()
 
@@ -467,6 +488,8 @@ def search_users():
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
+                'cryptee_id': user.cryptee_id,
+                'public_key': user.public_key,
                 'full_name': user.get_full_name(),
                 'is_online': True  # TODO: Implement online status
             })

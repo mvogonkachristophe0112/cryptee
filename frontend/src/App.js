@@ -17,6 +17,7 @@ import Profile from './components/user/Profile';
 import Settings from './components/settings/Settings';
 import Copyright from './components/common/Copyright';
 import LoadingSpinner from './components/common/LoadingSpinner';
+import ChatWindow from './components/chat/ChatWindow';
 
 // Context
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -106,6 +107,10 @@ function AppContent() {
           <Route
             path="/copyright"
             element={<Copyright />}
+          />
+          <Route
+            path="/crypchat"
+            element={user ? <ChatWindow /> : <Navigate to="/login" replace />}
           />
 
           {/* Default redirect */}

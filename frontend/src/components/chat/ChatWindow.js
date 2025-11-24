@@ -83,11 +83,21 @@ const ChatWindow = ({ conversation, onMessageSent }) => {
         >
           {conversation.participant?.username?.charAt(0).toUpperCase() || '?'}
         </div>
-        <div>
+        <div className="flex-grow-1">
           <h5 className="mb-0">{conversation.participant?.username || 'Unknown User'}</h5>
-          <small className="text-muted">
+          <small className="text-muted d-block">
             {conversation.participant?.email || ''}
           </small>
+          {conversation.participant?.cryptee_id && (
+            <small className="text-info d-block">
+              <strong>Cryptee ID:</strong> {conversation.participant.cryptee_id}
+            </small>
+          )}
+          {conversation.participant?.public_key && (
+            <small className="text-success d-block" style={{ wordBreak: 'break-all', fontSize: '10px' }}>
+              <strong>Public Key:</strong> {conversation.participant.public_key.substring(0, 50)}...
+            </small>
+          )}
         </div>
       </Card.Header>
 
