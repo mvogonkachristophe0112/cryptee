@@ -688,3 +688,58 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
+
+/* Dashboard enhancements */
+.timeline-item {
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 30px;
+  bottom: -15px;
+  width: 2px;
+  background: #e9ecef;
+}
+
+.timeline-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.system-status-item {
+  transition: all 0.3s ease;
+}
+
+.system-status-item:hover {
+  background: rgba(0,0,0,0.05);
+  border-radius: 8px;
+  padding: 8px;
+  margin: -8px;
+}
+
+.file-type-item {
+  transition: all 0.3s ease;
+}
+
+.file-type-item:hover {
+  transform: translateX(5px);
+}
+
+.conversation-item {
+  transition: all 0.3s ease;
+}
+
+.conversation-item:hover {
+  background: rgba(0,0,0,0.05);
+  border-radius: 8px;
+}
