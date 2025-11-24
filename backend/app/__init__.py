@@ -217,29 +217,51 @@ def create_app(config_name=None):
         status_code = 200 if health_status['status'] == 'healthy' else 503
         return health_status, status_code
 
-    # Serve React app for all non-API routes
+    # Proxy requests to React dev server for development
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
-    def serve_react_app(path):
-        # Skip API routes and health checks
+    def proxy_to_react(path):
+        import requests
+
+        # For API routes, let Flask handle them
         if path.startswith('api/') or path.startswith('health'):
+            # This will be handled by other routes
+            if not path.startswith('api/') and not path.startswith('health'):
+                return serve_page_content('home')
             return {'error': 'Not found'}, 404
 
-        # Try to serve from built React app first
-        build_path = os.path.join(app.root_path, '..', '..', 'frontend', 'build', path)
+        # For all other routes in development, proxy to React dev server
+        if app.config.get('DEBUG', False):
+            try:
+                # Proxy the request to React dev server
+                react_url = f'http://localhost:3000/{path}'
+                if request.query_string:
+                    react_url += f'?{request.query_string.decode()}'
 
-        # If it's a file that exists, serve it
-        if os.path.isfile(build_path):
-            return app.send_static_file(build_path)
+                resp = requests.request(
+                    method=request.method,
+                    url=react_url,
+                    headers={key: value for (key, value) in request.headers if key != 'Host'},
+                    data=request.get_data(),
+                    cookies=request.cookies,
+                    allow_redirects=False
+                )
 
-        # For directories or root, serve index.html
-        index_path = os.path.join(app.root_path, '..', '..', 'frontend', 'build', 'index.html')
-        if os.path.isfile(index_path):
-            with open(index_path, 'r', encoding='utf-8') as f:
-                return f.read(), 200, {'Content-Type': 'text/html'}
-
-        # Fallback to old static serving
-        return serve_page_content('home')
+                # Create response with proxied content
+                response = app.response_class(
+                    resp.content,
+                    status=resp.status_code,
+                    headers=dict(resp.headers)
+                )
+                return response
+            except requests.exceptions.RequestException:
+                # If React server is not available, serve fallback
+                return serve_page_content('home')
+        else:
+            # Production mode - serve static content
+            if not path or path == '':
+                return serve_page_content('home')
+            return serve_page_content('home')
 
     def serve_page_content(page_name):
         # Read the base HTML
