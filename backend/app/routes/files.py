@@ -10,7 +10,7 @@ from flask import Blueprint, request, jsonify, send_file, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from .. import db, limiter
-from ..models import User, File, FileVersion
+from ..models import User, File, FileVersion, Share
 from ..utils.logger import RequestLogger, log_error
 from ..utils.validators import validate_file_size, sanitize_filename
 from ..utils.audit import log_activity
