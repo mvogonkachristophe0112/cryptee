@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, Form, Button, InputGroup } from 'react-bootstrap';
-import { FaPaperPlane, FaUser, FaClock } from 'react-icons/fa';
+import { Card, Form, Button, InputGroup, Dropdown } from 'react-bootstrap';
+import { FaPaperPlane, FaUser, FaClock, FaSmile, FaThumbsUp, FaHeart, FaLaugh, FaSadTear } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { chatAPI } from '../../services/api';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -11,7 +11,10 @@ const ChatWindow = ({ conversation, onMessageSent }) => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const emojis = ['👍', '❤️', '😂', '😢', '😮', '👏', '🔥', '💯'];
 
   useEffect(() => {
     loadMessages();
@@ -61,6 +64,11 @@ const ChatWindow = ({ conversation, onMessageSent }) => {
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const addEmoji = (emoji) => {
+    setNewMessage(prev => prev + emoji);
+    setShowEmojiPicker(false);
   };
 
   if (loading) {
@@ -117,30 +125,46 @@ const ChatWindow = ({ conversation, onMessageSent }) => {
                 message.sender?.id === user.id ? 'justify-content-end' : 'justify-content-start'
               }`}
             >
+              {message.sender?.id !== user.id && (
+                <div
+                  className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
+                  style={{ width: 32, height: 32, fontSize: '14px', fontWeight: 'bold' }}
+                >
+                  {message.sender?.username?.charAt(0).toUpperCase() || '?'}
+                </div>
+              )}
               <div
-                className={`p-3 rounded ${
+                className={`p-3 rounded-3 shadow-sm ${
                   message.sender?.id === user.id
-                    ? 'bg-primary text-white'
-                    : 'bg-light'
+                    ? 'bg-primary text-white message-bubble-sent'
+                    : 'bg-white border message-bubble-received'
                 }`}
-                style={{ maxWidth: '70%' }}
+                style={{ maxWidth: '70%', position: 'relative' }}
               >
-                <div className="mb-1">
-                  {message.sender?.id !== user.id && (
-                    <small className="fw-bold text-muted me-2">
+                {message.sender?.id !== user.id && (
+                  <div className="mb-1">
+                    <small className="fw-bold text-primary">
                       {message.sender?.username}
                     </small>
-                  )}
+                  </div>
+                )}
+                <div className="message-content">{message.content}</div>
+                <div className="d-flex justify-content-between align-items-center mt-2">
                   <small className={`${
                     message.sender?.id === user.id ? 'text-white-50' : 'text-muted'
                   }`}>
                     <FaClock className="me-1" />
                     {formatTime(message.created_at)}
                   </small>
+                  {message.sender?.id === user.id && (
+                    <small className="text-white-50">
+                      ✓✓
+                    </small>
+                  )}
                 </div>
-                <div>{message.content}</div>
                 {message.is_expired && (
                   <small className="text-warning mt-1 d-block">
+                    <FaClock className="me-1" />
                     This message has expired
                   </small>
                 )}
@@ -162,6 +186,30 @@ const ChatWindow = ({ conversation, onMessageSent }) => {
               onChange={(e) => setNewMessage(e.target.value)}
               disabled={sending}
             />
+            <Dropdown show={showEmojiPicker} onToggle={setShowEmojiPicker}>
+              <Dropdown.Toggle
+                variant="outline-secondary"
+                id="emoji-dropdown"
+                className="d-flex align-items-center"
+              >
+                <FaSmile />
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="p-2" style={{ minWidth: '200px' }}>
+                <div className="d-flex flex-wrap gap-2">
+                  {emojis.map((emoji, index) => (
+                    <Button
+                      key={index}
+                      variant="light"
+                      size="sm"
+                      onClick={() => addEmoji(emoji)}
+                      className="emoji-btn"
+                    >
+                      {emoji}
+                    </Button>
+                  ))}
+                </div>
+              </Dropdown.Menu>
+            </Dropdown>
             <Button
               type="submit"
               variant="primary"

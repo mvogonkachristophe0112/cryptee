@@ -640,6 +640,37 @@
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 
+/* Chat enhancements */
+.message-bubble-sent {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  border-bottom-right-radius: 5px;
+}
+
+.message-bubble-received {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-bottom-left-radius: 5px;
+}
+
+.message-content {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.emoji-btn {
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.emoji-btn:hover {
+  background: #f8f9fa;
+  transform: scale(1.1);
+}
+
 /* Utility classes */
 .text-gradient {
   background: linear-gradient(135deg, #007bff, #28a745);

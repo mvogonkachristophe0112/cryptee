@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from '../context/TranslationContext';
 import { Navbar as BootstrapNavbar, Nav, Button, Container } from 'react-bootstrap';
+import { FaSun, FaMoon } from 'react-icons/fa';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -48,6 +59,10 @@ const Navbar = () => {
                   <i className="fas fa-comments me-1"></i>
                   <strong>CrypChat</strong>
                 </Nav.Link>
+                <Nav.Link as={Link} to="/offline-encryption">
+                  <i className="fas fa-lock me-1"></i>
+                  Offline Encryption
+                </Nav.Link>
                 <Nav.Link as={Link} to="/settings">
                   <i className="fas fa-cog me-1"></i>
                   {t('nav.settings', 'Settings')}
@@ -56,10 +71,6 @@ const Navbar = () => {
                   <i className="fas fa-copyright me-1"></i>
                   {t('nav.copyright', 'Copyright')}
                 </Nav.Link>
-                <Nav.Link as={Link} to="/settings">
-                  <i className="fas fa-cog me-1"></i>
-                  Settings
-                </Nav.Link>
               </>
             )}
           </Nav>
@@ -67,6 +78,15 @@ const Navbar = () => {
           <Nav className="ms-auto align-items-center">
             {isAuthenticated ? (
               <>
+                <Button
+                  variant="outline-light"
+                  size="sm"
+                  onClick={toggleTheme}
+                  className="me-3"
+                  title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+                >
+                  {theme === 'light' ? <FaMoon /> : <FaSun />}
+                </Button>
                 <Nav.Item className="me-3">
                   <span className="text-white">
                     Welcome, {user?.first_name || user?.email?.split('@')[0]}

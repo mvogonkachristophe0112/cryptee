@@ -17,6 +17,7 @@ Cryptee is a comprehensive, production-ready secure encrypted data sharing platf
 - **JWT Authentication**: Multi-factor authentication support
 - **Real-time Chat**: End-to-end encrypted messaging (CryChat)
 - **Offline Storage**: Encrypted local storage (CryVault)
+- **Offline Encryption**: Client-side file encryption/decryption
 - **Self-Destruct Files**: Automatic file deletion features
 
 ### **🌐 Internationalization & UX**
@@ -35,7 +36,7 @@ Cryptee is a comprehensive, production-ready secure encrypted data sharing platf
 - **Session Security**: Advanced session monitoring
 
 ### **📱 Platform Support**
-- **Web Application**: Full-featured React SPA
+- **Web Application**: Full-featured React SPA with offline encryption
 - **Mobile App**: React Native implementation
 - **API-First Design**: Complete REST API
 - **Docker Support**: Containerized deployment
@@ -633,6 +634,7 @@ If you discover a security vulnerability, please report it responsibly:
 - ✅ **Multi-language support** with dynamic switching
 - ✅ **Theme system** (Light/Dark/Auto) with seamless transitions
 - ✅ **Offline storage** (CryVault) for secure local access
+- ✅ **Offline encryption** for client-side file processing
 - ✅ **Advanced security features** including AI threat scanning
 - ✅ **Mobile app** with React Native implementation
 - ✅ **Docker deployment** with production configurations

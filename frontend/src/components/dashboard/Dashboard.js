@@ -12,7 +12,8 @@ import {
   FaUsers,
   FaShieldAlt,
   FaClock,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaLock
 } from 'react-icons/fa';
 
 const Dashboard = () => {
@@ -196,6 +197,10 @@ const Dashboard = () => {
                 <Button as={Link} to="/profile" variant="outline-info" size="sm">
                   <FaUsers className="me-1" />
                   Profile Settings
+                </Button>
+                <Button as={Link} to="/offline-encryption" variant="outline-warning" size="sm">
+                  <FaLock className="me-1" />
+                  Offline Encryption
                 </Button>
               </div>
             </Card.Body>
