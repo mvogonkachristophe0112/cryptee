@@ -19,7 +19,7 @@ import Copyright from './components/common/Copyright';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import Chat from './components/chat/Chat';
 import OfflineEncryption from './components/offline/OfflineEncryption';
-import Home from './components/home/Home';
+import HomePage from './components/home/HomePage';
 
 // Context
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -66,7 +66,7 @@ function AppContent() {
           {/* Public routes */}
           <Route
             path="/home"
-            element={<Home />}
+            element={<HomePage />}
           />
           <Route
             path="/login"
